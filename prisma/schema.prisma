@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  PLAYER
+}
+
+enum Stage {
+  GROUP
+  R32
+  R16
+  QF
+  SF
+  BRONZE
+  FINAL
+}
+
+enum CzechPlacement {
+  GROUP
+  R32
+  R16
+  QF
+  SF
+  FINAL
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PLAYER)
+  points       Int      @default(0)
+  exactMatches Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  matchPredictions     MatchPrediction[]
+  groupPredictions     GroupPrediction[]
+  tournamentPrediction TournamentPrediction?
+}
+
+model Team {
+  id    String @id
+  name  String
+  flag  String
+  group String
+
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+
+  goldFor   TournamentPrediction[] @relation("GoldTeam")
+  silverFor TournamentPrediction[] @relation("SilverTeam")
+  bronzeFor TournamentPrediction[] @relation("BronzeTeam")
+
+  firstPlaceIn  GroupPrediction[] @relation("FirstPlace")
+  secondPlaceIn GroupPrediction[] @relation("SecondPlace")
+  thirdPlaceIn  GroupPrediction[] @relation("ThirdPlace")
+
+  grFirst  GroupResult[] @relation("GRFirst")
+  grSecond GroupResult[] @relation("GRSecond")
+  grThird  GroupResult[] @relation("GRThird")
+
+  trGold   TournamentResult[] @relation("TRGold")
+  trSilver TournamentResult[] @relation("TRSilver")
+  trBronze TournamentResult[] @relation("TRBronze")
+}
+
+model Match {
+  id          String   @id @default(uuid())
+  matchNumber Int      @unique
+  homeTeamId  String?
+  awayTeamId  String?
+  date        DateTime
+  location    String
+  stage       Stage
+  groupName   String?
+  homeScore   Int?
+  awayScore   Int?
+  isFinished  Boolean  @default(false)
+
+  homeTeam    Team?             @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam    Team?             @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  predictions MatchPrediction[]
+}
+
+model MatchPrediction {
+  id            String @id @default(uuid())
+  userId        String
+  matchId       String
+  homeScore     Int
+  awayScore     Int
+  pointsAwarded Int    @default(0)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchId])
+}
+
+model GroupPrediction {
+  id                String  @id @default(uuid())
+  userId            String
+  group             String
+  firstPlaceTeamId  String?
+  secondPlaceTeamId String?
+  thirdPlaceTeamId  String?
+  pointsAwarded     Int     @default(0)
+
+  user            User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstPlaceTeam  Team? @relation("FirstPlace", fields: [firstPlaceTeamId], references: [id])
+  secondPlaceTeam Team? @relation("SecondPlace", fields: [secondPlaceTeamId], references: [id])
+  thirdPlaceTeam  Team? @relation("ThirdPlace", fields: [thirdPlaceTeamId], references: [id])
+
+  @@unique([userId, group])
+}
+
+model TournamentPrediction {
+  id                     String          @id @default(uuid())
+  userId                 String          @unique
+  czechPlacement         CzechPlacement?
+  czechPointsAwarded     Int             @default(0)
+  topScorer              String?
+  topScorerPointsAwarded Int             @default(0)
+  goldTeamId             String?
+  silverTeamId           String?
+  bronzeTeamId           String?
+  overallPointsAwarded   Int             @default(0)
+
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goldTeam   Team? @relation("GoldTeam", fields: [goldTeamId], references: [id])
+  silverTeam Team? @relation("SilverTeam", fields: [silverTeamId], references: [id])
+  bronzeTeam Team? @relation("BronzeTeam", fields: [bronzeTeamId], references: [id])
+}
+
+model GroupResult {
+  group             String  @id
+  firstPlaceTeamId  String?
+  secondPlaceTeamId String?
+  thirdPlaceTeamId  String?
+
+  firstPlaceTeam  Team? @relation("GRFirst",  fields: [firstPlaceTeamId],  references: [id])
+  secondPlaceTeam Team? @relation("GRSecond", fields: [secondPlaceTeamId], references: [id])
+  thirdPlaceTeam  Team? @relation("GRThird",  fields: [thirdPlaceTeamId],  references: [id])
+}
+
+model TournamentResult {
+  id             String          @id @default("singleton")
+  czechPlacement CzechPlacement?
+  topScorer      String?
+  goldTeamId     String?
+  silverTeamId   String?
+  bronzeTeamId   String?
+
+  goldTeam   Team? @relation("TRGold",   fields: [goldTeamId],   references: [id])
+  silverTeam Team? @relation("TRSilver", fields: [silverTeamId], references: [id])
+  bronzeTeam Team? @relation("TRBronze", fields: [bronzeTeamId], references: [id])
+}
