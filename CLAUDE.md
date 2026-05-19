@@ -79,6 +79,8 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 ## Platby hráčů (prize pool)
 
 - Vklad: **400 Kč / hráč**, sledováno přes pole `hasPaid` (Boolean, default false) na modelu `User`
+- Prize pool na dashboardu počítá **pouze zaplacené hráče**: `players.filter(p => p.hasPaid).length * 400`
+- `ENTRY_FEE = 400` v `app/(main)/page.tsx`
 - Admin přepíná platbu tlačítkem u každého hráče v záložce Hráči
 - Prize pool banner nahoře v záložce Hráči zobrazuje: celkovou částku, počet zaplacených, progress bar
 - Server action: `togglePlayerPayment(userId, hasPaid)` v `lib/actions/admin.ts`
@@ -97,6 +99,14 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 
 - **Orámování karet** – všude `border-blue-900` (plná tmavě modrá, bez opacity). Nepoužívat `border-blue-900/30` ani jiné varianty s opacitou.
 - **Rank indikátory ve skupinách** – místo emoji medailí (🥇🥈🥉) se používají barevné kroužky s číslem: žlutý (1), šedý (2), oranžový (3). Třídy: `border-yellow-400 text-yellow-500` / `border-gray-300 text-gray-400` / `border-amber-400 text-amber-600`.
+
+## Deployment (Vercel)
+
+- Repo: `https://github.com/daavidsv5/tipovacka-mundial-2026`
+- Build příkaz: `prisma generate && next build` — nutné aby Vercel vygeneroval Prisma klienta (složka `lib/generated/prisma` je v `.gitignore`)
+- Environment variables na Vercelu: `DATABASE_URL`, `AUTH_SECRET`, `NEXTAUTH_URL`
+- `NEXTAUTH_URL` = produkční URL projektu (např. `https://tipovacka-mundial-2026.vercel.app`)
+- Po změně env variables je nutný Redeploy
 
 ## Kritické detaily
 
