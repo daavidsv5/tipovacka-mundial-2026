@@ -53,13 +53,19 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
   );
 
   return (
-    <aside className="flex flex-col h-full bg-[#0a1628]">
+    <aside className="flex flex-col h-full bg-[#0d1f45]">
       {/* Logo */}
       <div className="px-5 py-6 border-b border-white/[0.07]">
         <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 shadow-lg shadow-blue-600/30">
-            <span className="text-2xl leading-none">⚽</span>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/fifa-logo.webp"
+            alt="FIFA WC 2026"
+            width={44}
+            height={44}
+            className="object-contain shrink-0"
+            style={{ filter: "invert(1)" }}
+          />
           <div className="min-w-0">
             <div className="text-white font-black text-xl leading-tight tracking-tight">Tipovačka</div>
             <div className="text-blue-400 text-sm font-medium">Mundial 2026</div>
@@ -73,6 +79,7 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
 
         {navItem("/", "Žebříček", <Trophy size={19} />)}
         {navItem("/vysledky", "Výsledky", <BarChart2 size={19} />)}
+        {navItem("/pravidla", "Pravidla", <BookOpen size={19} />)}
 
         {sectionLabel("Hráči")}
 
@@ -105,9 +112,6 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
                       : "text-slate-400 hover:text-white hover:bg-white/[0.06]"
                   }`}
                 >
-                  <span className="w-6 h-6 rounded-full bg-slate-800 border border-white/[0.1] flex items-center justify-center text-[11px] font-bold text-slate-200 shrink-0 uppercase">
-                    {p.name[0]}
-                  </span>
                   <span className="truncate">{p.name}</span>
                   {isCurrent && (
                     <span className="ml-auto text-[11px] text-slate-500 bg-slate-800/80 px-1.5 py-0.5 rounded shrink-0">
@@ -119,9 +123,6 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
             })}
           </div>
         )}
-
-        {sectionLabel("Ostatní")}
-        {navItem("/pravidla", "Pravidla", <BookOpen size={19} />)}
 
         {isAdmin && (
           <>

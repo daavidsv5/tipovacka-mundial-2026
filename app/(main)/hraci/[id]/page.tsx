@@ -39,13 +39,24 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
   const data = await getData(id);
   if (!data || !data.player || data.player.role === "ADMIN") notFound();
 
-  const canEdit = session.user.id === id || session.user.role === "ADMIN";
+  const isAdmin = session.user.role === "ADMIN";
+  const isOwner = session.user.id === id;
+  const canEdit = isOwner || isAdmin;
+
+  const now = new Date();
+  const firstGroupMatch = data.matches
+    .filter((m) => m.stage === "GROUP")
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+  const tournamentStarted = firstGroupMatch ? now >= new Date(firstGroupMatch.date) : false;
+
+  const canEditGroups = isAdmin || (isOwner && !tournamentStarted);
+  const canEditTournament = isAdmin || (isOwner && !tournamentStarted);
   const avatarColor = AVATAR_COLORS[data.player.name.charCodeAt(0) % AVATAR_COLORS.length];
 
   return (
     <div className="space-y-6">
       {/* Player header */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-7 flex items-center gap-6 shadow-sm">
+      <div className="bg-white border border-blue-900/30 rounded-2xl p-7 flex items-center gap-6 shadow-sm">
         <div className={`w-16 h-16 rounded-2xl ${avatarColor} flex items-center justify-center text-3xl font-black text-white shrink-0 shadow-sm`}>
           {data.player.name[0].toUpperCase()}
         </div>
@@ -74,6 +85,8 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
         groupPredictions={data.groupPredictions}
         tournamentPrediction={data.tournamentPrediction}
         canEdit={canEdit}
+        canEditGroups={canEditGroups}
+        canEditTournament={canEditTournament}
       />
     </div>
   );

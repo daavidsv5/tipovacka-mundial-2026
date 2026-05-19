@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { saveTournamentPrediction } from "@/lib/actions/predictions";
@@ -67,7 +67,7 @@ export function TournamentPredictions({
             <span className="text-gray-800 text-sm font-medium truncate">{selected.name}</span>
           </div>
         ) : (
-          <span className="text-gray-400 text-sm flex-1">— nevybráno —</span>
+          <span className="text-gray-400 text-sm flex-1">nevybráno</span>
         )}
         {pts > 0 && (
           <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg shrink-0">
@@ -96,7 +96,7 @@ export function TournamentPredictions({
   return (
     <div className="space-y-5">
       {/* Česko */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center gap-2.5">
             <span className="fi fi-cz rounded-sm text-xl" />
@@ -134,7 +134,7 @@ export function TournamentPredictions({
       </div>
 
       {/* Pódium */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h3 className="text-gray-800 font-bold">🏆 Celkové pódium turnaje</h3>
           <span className="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg font-semibold">+10 b. / správný</span>
@@ -152,7 +152,7 @@ export function TournamentPredictions({
       </div>
 
       {/* Nejlepší střelec */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h3 className="text-gray-800 font-bold">⚽ Nejlepší střelec</h3>
           <span className="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg font-semibold">+10 b.</span>

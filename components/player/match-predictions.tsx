@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { saveMatchPrediction } from "@/lib/actions/predictions";
@@ -29,7 +29,7 @@ function PointsBadge({ pts }: { pts: number }) {
 function ScoreInputCard({
   matchId, playerId, homeTeam, awayTeam,
   initHome, initAway, locked, realHome, realAway,
-  isFinished, pointsAwarded, canEdit, groupName, date,
+  isFinished, pointsAwarded, canEdit, groupName, stage, date,
 }: {
   matchId: string; playerId: string;
   homeTeam: { name: string; flag: string } | null;
@@ -37,7 +37,7 @@ function ScoreInputCard({
   initHome: number | null; initAway: number | null;
   locked: boolean; realHome: number | null; realAway: number | null;
   isFinished: boolean; pointsAwarded: number; canEdit: boolean;
-  groupName?: string | null; date: Date;
+  groupName?: string | null; stage: string; date: Date;
 }) {
   const [home, setHome] = useState(initHome?.toString() ?? "");
   const [away, setAway] = useState(initAway?.toString() ?? "");
@@ -62,15 +62,15 @@ function ScoreInputCard({
   const timeStr = date.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${isFinished ? "border-gray-200" : "border-gray-200 hover:border-blue-300 hover:shadow-md"}`}>
+    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
       {/* Top row: group + date */}
       <div className="flex items-center justify-between px-5 pt-3.5 pb-2">
         {groupName ? (
           <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Skupina {groupName}</span>
         ) : (
-          <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{STAGE_LABELS["GROUP"]}</span>
+          <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{STAGE_LABELS[stage]}</span>
         )}
-        <span className="text-xs text-gray-400 font-medium tabular-nums">{dateStr} • {timeStr}</span>
+        <span className="text-xs text-gray-900 font-bold tabular-nums shrink-0">{dateStr} • {timeStr}</span>
       </div>
 
       {/* Main row: teams + score */}
@@ -225,7 +225,7 @@ export function MatchPredictions({
                     realHome={m.homeScore} realAway={m.awayScore}
                     isFinished={m.isFinished} pointsAwarded={pred?.pointsAwarded ?? 0}
                     canEdit={canEdit}
-                    groupName={m.groupName} date={new Date(m.date)}
+                    groupName={m.groupName} stage={m.stage} date={new Date(m.date)}
                   />
                 );
               })}

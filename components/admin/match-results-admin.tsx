@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { saveMatchResult, assignPlayoffTeam, adminSaveMatchPrediction } from "@/lib/actions/admin";
@@ -61,10 +61,10 @@ function PlayerPredictionRow({
       <div className="w-7 h-7 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-[11px] font-bold text-blue-700 shrink-0">
         {initial}
       </div>
-      <span className="text-sm font-medium text-gray-700 w-32 truncate">{player.name}</span>
+      <span className="text-sm font-medium text-gray-700 flex-1 min-w-0 truncate">{player.name}</span>
 
       {/* Score inputs */}
-      <div className="flex items-center gap-1.5 ml-auto">
+      <div className="flex items-center gap-1.5 shrink-0">
         <input
           type="number" min={0} max={20} value={home}
           onChange={(e) => setHome(e.target.value)}
@@ -128,16 +128,14 @@ function MatchRow({
   const predCount = matchPreds.size;
 
   const handleSave = () => {
-    const h = parseInt(home);
-    const a = parseInt(away);
-    if (isNaN(h) || isNaN(a)) return;
-
     startTransition(async () => {
       if (isPlayoff) {
-        if (homeTeamId !== match.homeTeamId) await assignPlayoffTeam(match.id, "home", homeTeamId);
-        if (awayTeamId !== match.awayTeamId) await assignPlayoffTeam(match.id, "away", awayTeamId);
+        if (homeTeamId && homeTeamId !== match.homeTeamId) await assignPlayoffTeam(match.id, "home", homeTeamId);
+        if (awayTeamId && awayTeamId !== match.awayTeamId) await assignPlayoffTeam(match.id, "away", awayTeamId);
       }
-      if (home !== "" && away !== "") {
+      const h = parseInt(home);
+      const a = parseInt(away);
+      if (!isNaN(h) && !isNaN(a) && home !== "" && away !== "") {
         await saveMatchResult(match.id, h, a);
       }
       setSaved(true);
@@ -164,7 +162,7 @@ function MatchRow({
   );
 
   return (
-    <div className={`bg-white border rounded-2xl shadow-sm transition-colors overflow-hidden ${match.isFinished ? "border-green-200 bg-green-50/30" : "border-gray-200 hover:border-blue-200"}`}>
+    <div className={`bg-white border rounded-2xl shadow-sm transition-colors overflow-hidden ${match.isFinished ? "border-green-200 bg-green-50/30" : "border-blue-900 hover:border-blue-700/50"}`}>
       {/* Main row */}
       <div className="flex items-center justify-between gap-4 flex-wrap px-5 py-4">
         <div className="text-xs text-gray-400 min-w-[110px] shrink-0">

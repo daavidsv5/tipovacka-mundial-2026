@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { Trophy, Calendar, Users, Target } from "lucide-react";
+﻿import { prisma } from "@/lib/prisma";
+import { Trophy, Calendar, Users } from "lucide-react";
 
 async function getData() {
   try {
@@ -7,7 +7,7 @@ async function getData() {
       prisma.user.findMany({
         where: { role: "PLAYER" },
         orderBy: [{ points: "desc" }, { exactMatches: "desc" }],
-        select: { id: true, name: true, points: true, exactMatches: true },
+        select: { id: true, name: true, points: true, exactMatches: true, hasPaid: true },
       }),
       prisma.match.count(),
       prisma.match.count({ where: { isFinished: true } }),
@@ -18,7 +18,7 @@ async function getData() {
   }
 }
 
-const ENTRY_FEE = 500;
+const ENTRY_FEE = 400;
 
 const RANK_BAR_COLORS = [
   "bg-gradient-to-r from-yellow-400 to-amber-500",
@@ -44,7 +44,8 @@ function InitialAvatar({ name }: { name: string }) {
 
 export default async function DashboardPage() {
   const { players, totalMatches, finishedMatches } = await getData();
-  const prizePool = players.length * ENTRY_FEE;
+  const paidCount = players.filter(p => p.hasPaid).length;
+  const prizePool = paidCount * ENTRY_FEE;
   const progressPct = totalMatches > 0 ? Math.round((finishedMatches / totalMatches) * 100) : 0;
   const maxPoints = players[0]?.points ?? 1;
 
@@ -63,9 +64,9 @@ export default async function DashboardPage() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Zápasy */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-blue-900 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Zápasy</span>
             <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -86,7 +87,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Hráči */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-blue-900 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hráči</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
@@ -98,7 +99,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Prize pool */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-blue-900 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Prize pool</span>
             <div className="w-8 h-8 rounded-xl bg-yellow-50 flex items-center justify-center">
@@ -109,32 +110,19 @@ export default async function DashboardPage() {
             {prizePool.toLocaleString("cs-CZ")}
             <span className="text-gray-400 text-base font-normal"> Kč</span>
           </div>
-          <div className="text-gray-400 text-xs mt-1">Celková výhra</div>
+          <div className="text-gray-400 text-xs mt-1">{paidCount} z {players.length} hráčů zaplatilo</div>
         </div>
 
-        {/* Vedoucí */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Vedoucí</span>
-            <div className="w-8 h-8 rounded-xl bg-violet-50 flex items-center justify-center">
-              <Target size={15} className="text-violet-600" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold text-gray-900 truncate">{players[0]?.name ?? "—"}</div>
-          <div className="text-gray-400 text-xs mt-1">
-            {players[0] ? `${players[0].points} bodů` : "Zatím nikdo"}
-          </div>
-        </div>
       </div>
 
       {/* Leaderboard */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-blue-900 rounded-2xl overflow-hidden shadow-sm">
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
             <Trophy size={18} className="text-yellow-500" />
             <h2 className="text-gray-900 font-bold text-lg">Pořadí hráčů</h2>
           </div>
-          <span className="text-gray-400 text-sm">Bodů celkem</span>
+          <span className="hidden sm:block text-gray-400 text-sm">Bodů celkem</span>
         </div>
 
         {players.length === 0 ? (
@@ -149,28 +137,28 @@ export default async function DashboardPage() {
               return (
                 <div
                   key={player.id}
-                  className={`flex items-center gap-5 px-6 py-4 hover:bg-gray-50 transition-colors ${rank === 1 ? "bg-yellow-50/50" : ""}`}
+                  className={`flex items-center gap-3 sm:gap-5 px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors ${rank === 1 ? "bg-yellow-50/50" : ""}`}
                 >
                   <div className="w-8 shrink-0 text-center">
                     {rank <= 3 ? (
-                      <span className="text-xl">{RANK_LABELS[rank - 1]}</span>
+                      <span className="text-2xl">{RANK_LABELS[rank - 1]}</span>
                     ) : (
-                      <span className="text-gray-400 font-semibold text-sm">{rank}</span>
+                      <span className="text-gray-400 font-black text-lg">{rank}</span>
                     )}
                   </div>
 
                   <InitialAvatar name={player.name} />
 
                   <div className="flex-1 min-w-0">
-                    <div className="text-gray-900 font-semibold">{player.name}</div>
+                    <div className="text-gray-900 font-bold text-xl">{player.name}</div>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-[140px]">
+                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-[80px] sm:max-w-[140px]">
                         <div
                           className={`h-full rounded-full ${rank <= 3 ? RANK_BAR_COLORS[rank - 1] : "bg-blue-500"}`}
                           style={{ width: `${barWidth}%` }}
                         />
                       </div>
-                      <span className="text-gray-400 text-xs shrink-0">
+                      <span className="hidden sm:block text-gray-400 text-xs shrink-0">
                         {player.exactMatches} přesných
                       </span>
                     </div>
@@ -190,7 +178,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Prize pool breakdown */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-blue-900 rounded-2xl overflow-hidden shadow-sm">
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
             <span className="text-xl">🏆</span>
@@ -201,20 +189,23 @@ export default async function DashboardPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 divide-x divide-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
           {[
-            { place: "1. místo", pct: 50, icon: "🥇", textColor: "text-yellow-500", bgColor: "bg-yellow-50", player: players[0] },
-            { place: "2. místo", pct: 30, icon: "🥈", textColor: "text-gray-500", bgColor: "bg-gray-50", player: players[1] },
+            { place: "1. místo", pct: 40, icon: "🥇", textColor: "text-yellow-500", bgColor: "bg-yellow-50", player: players[0] },
+            { place: "2. místo", pct: 25, icon: "🥈", textColor: "text-gray-500", bgColor: "bg-gray-50", player: players[1] },
             { place: "3. místo", pct: 20, icon: "🥉", textColor: "text-amber-600", bgColor: "bg-amber-50", player: players[2] },
+            { place: "4. místo", pct: 10, icon: "4️⃣", textColor: "text-blue-500", bgColor: "bg-blue-50", player: players[3] },
+            { place: "5. místo", pct: 5,  icon: "5️⃣", textColor: "text-indigo-500", bgColor: "bg-indigo-50", player: players[4] },
           ].map(({ place, pct, icon, textColor, bgColor, player }) => (
-            <div key={place} className={`flex flex-col items-center py-8 px-4 gap-2 text-center ${bgColor}`}>
-              <span className="text-3xl">{icon}</span>
-              <div className={`text-2xl font-bold ${textColor}`}>
+            <div key={place} className={`flex flex-col items-center py-6 px-3 gap-1.5 text-center ${bgColor}`}>
+              <span className="text-2xl">{icon}</span>
+              <div className={`text-xl font-bold ${textColor}`}>
                 {Math.round(prizePool * pct / 100).toLocaleString("cs-CZ")} Kč
               </div>
-              <div className="text-gray-400 text-sm">{pct}% · {place}</div>
+              <div className="text-sm font-bold text-gray-700">{pct} %</div>
+              <div className="text-gray-600 text-sm font-bold">{place}</div>
               {player && (
-                <div className="text-gray-600 text-sm font-semibold mt-1">{player.name}</div>
+                <div className="text-gray-800 text-xl font-bold mt-0.5">{player.name}</div>
               )}
             </div>
           ))}

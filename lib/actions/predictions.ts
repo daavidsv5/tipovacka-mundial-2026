@@ -80,24 +80,28 @@ export async function saveTournamentPrediction(data: {
     session.user.id === data.targetUserId || session.user.role === "ADMIN";
   if (!canEdit) throw new Error("Nemáš oprávnění");
 
-  await prisma.tournamentPrediction.upsert({
+  const payload = {
+    czechPlacement: data.czechPlacement as never,
+    topScorer: data.topScorer,
+    goldTeamId: data.goldTeamId,
+    silverTeamId: data.silverTeamId,
+    bronzeTeamId: data.bronzeTeamId,
+  };
+
+  const existing = await prisma.tournamentPrediction.findUnique({
     where: { userId: data.targetUserId },
-    create: {
-      userId: data.targetUserId,
-      czechPlacement: data.czechPlacement as never,
-      topScorer: data.topScorer,
-      goldTeamId: data.goldTeamId,
-      silverTeamId: data.silverTeamId,
-      bronzeTeamId: data.bronzeTeamId,
-    },
-    update: {
-      czechPlacement: data.czechPlacement as never,
-      topScorer: data.topScorer,
-      goldTeamId: data.goldTeamId,
-      silverTeamId: data.silverTeamId,
-      bronzeTeamId: data.bronzeTeamId,
-    },
   });
+
+  if (existing) {
+    await prisma.tournamentPrediction.update({
+      where: { id: existing.id },
+      data: payload,
+    });
+  } else {
+    await prisma.tournamentPrediction.create({
+      data: { userId: data.targetUserId, ...payload },
+    });
+  }
 
   revalidatePath(`/hraci/${data.targetUserId}`);
   return { ok: true };

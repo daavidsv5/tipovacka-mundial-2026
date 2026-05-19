@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { saveTournamentResult } from "@/lib/actions/admin";
@@ -97,7 +97,7 @@ export function TournamentResultsAdmin({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Pódium */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
             <h3 className="font-semibold text-gray-800">🏆 Pódium turnaje</h3>
             <p className="text-xs text-gray-500 mt-0.5">Za každý správný tip hráč dostane 10 bodů</p>
@@ -126,7 +126,7 @@ export function TournamentResultsAdmin({
 
         {/* Česko + Střelec */}
         <div className="space-y-4">
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
               <h3 className="font-semibold text-gray-800">🇨🇿 Umístění českého týmu</h3>
               <p className="text-xs text-gray-500 mt-0.5">Za správný tip hráč dostane 10 bodů</p>
@@ -141,7 +141,7 @@ export function TournamentResultsAdmin({
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
               <h3 className="font-semibold text-gray-800">⚽ Nejlepší střelec</h3>
               <p className="text-xs text-gray-500 mt-0.5">Za správný tip hráč dostane 10 bodů</p>

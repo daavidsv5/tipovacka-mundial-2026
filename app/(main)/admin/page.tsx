@@ -11,7 +11,7 @@ async function getData() {
   const [matches, teams, players, groupResults, tournamentResult, matchPredictions] = await Promise.all([
     safe(() => prisma.match.findMany({ include: { homeTeam: true, awayTeam: true }, orderBy: { matchNumber: "asc" } }), []),
     safe(() => prisma.team.findMany({ orderBy: [{ group: "asc" }, { name: "asc" }] }), []),
-    safe(() => prisma.user.findMany({ where: { role: "PLAYER" }, select: { id: true, name: true, email: true, points: true, exactMatches: true, createdAt: true }, orderBy: { name: "asc" } }), []),
+    safe(() => prisma.user.findMany({ where: { role: "PLAYER" }, select: { id: true, name: true, email: true, points: true, exactMatches: true, hasPaid: true, createdAt: true }, orderBy: { name: "asc" } }), []),
     safe(() => prisma.groupResult.findMany(), []),
     safe(() => prisma.tournamentResult.findUnique({ where: { id: "singleton" } }), null),
     safe(() => prisma.matchPrediction.findMany(), []),

@@ -29,7 +29,7 @@ npx prisma db push           # sync schématu s DB (bez migration history)
 app/
   (main)/          # chráněné stránky (auth guard v proxy.ts)
     page.tsx        # žebříček / dashboard
-    vysledky/       # výsledky zápasů
+    vysledky/       # výsledky – záložky Zápasy / Skupiny / Turnaj
     hraci/[id]/     # tipy konkrétního hráče
     admin/          # admin panel (role: ADMIN)
   login/            # přihlašovací stránka
@@ -45,7 +45,8 @@ lib/
 components/
   sidebar.tsx       # navigace (desktop), přijímá userName + userEmail
   mobile-header.tsx # navigace (mobil)
-  admin/            # admin komponenty (tabs, match results, group results, ...)
+  vysledky-tabs.tsx # klientský komponent se záložkami pro stránku Výsledky
+  admin/            # admin komponenty (tabs, match results, group results, players, tournament)
   player/           # hráčské komponenty (match predictions, group, tournament)
 prisma/schema.prisma
 ```
@@ -56,6 +57,13 @@ prisma/schema.prisma
 - Admin vidí vše + admin panel na `/admin`
 - Každý hráč vidí tipy ostatních, ale upravovat může jen svoje (nebo admin cizí)
 - `canEdit` prop řídí, zda jsou inputy aktivní
+
+## Zamykání tipů
+
+- **Zápasy** – každý zápas se uzamkne samostatně v momentě jeho začátku (`now >= match.date`)
+- **Skupiny + Turnaj** – uzamknou se pro hráče v momentě prvního skupinového zápasu (= zahájení turnaje)
+- Admin může vždy editovat bez ohledu na zamčení
+- Logika v `app/(main)/hraci/[id]/page.tsx`: `canEditGroups`, `canEditTournament` předávány odděleně od `canEdit` (pro zápasy)
 
 ## Bodování zápasů
 
@@ -68,6 +76,28 @@ prisma/schema.prisma
 
 Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správné umístění (turnaj).
 
+## Platby hráčů (prize pool)
+
+- Vklad: **400 Kč / hráč**, sledováno přes pole `hasPaid` (Boolean, default false) na modelu `User`
+- Admin přepíná platbu tlačítkem u každého hráče v záložce Hráči
+- Prize pool banner nahoře v záložce Hráči zobrazuje: celkovou částku, počet zaplacených, progress bar
+- Server action: `togglePlayerPayment(userId, hasPaid)` v `lib/actions/admin.ts`
+
+## Revalidace po admin akcích
+
+- `assignPlayoffTeam` a `saveMatchResult` volají `revalidatePath("/", "layout")` – revaliduje celý strom (hráči, výsledky, admin)
+- Přiřazení týmů playoff zápasů funguje i bez vyplněného skóre (guard `isNaN` odstraněn z `handleSave` v `match-results-admin.tsx`)
+
+## Kódování souborů
+
+- Všechny `.tsx` soubory musí být uloženy v **UTF-8** – české znaky a emoji se jinak zobrazují jako `Ĺ™`, `â€"` apod.
+- Problém se projevoval v `tournament-predictions.tsx` a `players-admin.tsx` – opraveno přepsáním souborů
+
+## Vizuální styl
+
+- **Orámování karet** – všude `border-blue-900` (plná tmavě modrá, bez opacity). Nepoužívat `border-blue-900/30` ani jiné varianty s opacitou.
+- **Rank indikátory ve skupinách** – místo emoji medailí (🥇🥈🥉) se používají barevné kroužky s číslem: žlutý (1), šedý (2), oranžový (3). Třídy: `border-yellow-400 text-yellow-500` / `border-gray-300 text-gray-400` / `border-amber-400 text-amber-600`.
+
 ## Kritické detaily
 
 - **TypeScript generiky v `.tsx`** – Turbopack parsuje `<T>` jako JSX. Používej `function` deklarace místo arrow funkcí s generiky.
@@ -75,3 +105,5 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - **Prisma composite unique** – `MatchPrediction` má `@@unique([userId, matchId])` → v upsert: `where: { userId_matchId: { userId, matchId } }`.
 - **Sidebar šířka** – `w-72` (288px) v `app/(main)/layout.tsx`, main content má `md:ml-72`.
 - **Prisma singleton** – `lib/prisma.ts` používá `globalForPrisma` pattern. Po `prisma generate` je nutný restart dev serveru.
+- **`prisma.groupResult` undefined** – nastane po změně schématu bez `prisma generate` + restartu serveru. Vždy obojí spustit po změně `schema.prisma`.
+- **Skupina vs. playoff admin save** – `handleSave` v `MatchRow` nesmí mít early return `if (isNaN(h) || isNaN(a))` před voláním `assignPlayoffTeam`, jinak se týmy nezapíší bez skóre.

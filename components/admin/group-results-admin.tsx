@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { saveGroupResult } from "@/lib/actions/admin";
@@ -47,13 +47,15 @@ function GroupResultCard({
     rank: number;
   }) => {
     const selected = teams.find((t) => t.id === value);
-    const rankColors = ["text-yellow-600", "text-gray-500", "text-amber-700"];
-    const rankLabels = ["🥇", "🥈", "🥉"];
+    const rankColors = ["text-yellow-500", "text-gray-400", "text-amber-600"];
+    const rankCircle = ["border-yellow-400 text-yellow-500", "border-gray-300 text-gray-400", "border-amber-400 text-amber-600"];
     const rankText = ["1. místo", "2. místo", "3. místo"];
 
     return (
       <div className="flex items-center gap-3 py-2">
-        <span className="text-lg w-7 shrink-0">{rankLabels[rank - 1]}</span>
+        <div className={`w-6 h-6 rounded-full border-2 ${rankCircle[rank - 1]} flex items-center justify-center shrink-0`}>
+          <span className="font-bold text-xs">{rank}</span>
+        </div>
         <span className={`text-sm font-semibold w-16 shrink-0 ${rankColors[rank - 1]}`}>
           {rankText[rank - 1]}
         </span>
@@ -63,7 +65,7 @@ function GroupResultCard({
             <span className="text-gray-800 text-sm font-medium truncate">{selected.name}</span>
           </div>
         ) : (
-          <span className="text-gray-400 text-sm flex-1">— nevybráno —</span>
+          <span className="text-gray-400 text-sm flex-1">nevybráno</span>
         )}
         <div className="relative shrink-0">
           <select
@@ -83,7 +85,7 @@ function GroupResultCard({
   };
 
   return (
-    <div className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${isComplete ? "border-green-200" : "border-gray-200"}`}>
+    <div className={`bg-white border rounded-2xl overflow-hidden shadow-sm ${isComplete ? "border-green-200" : "border-blue-900"}`}>
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
@@ -108,7 +110,7 @@ function GroupResultCard({
         </div>
       </div>
 
-      <div className="px-5 py-2 divide-y divide-gray-50">
+      <div className="px-5 py-2 space-y-1">
         <TeamSelect value={first} onChange={setFirst} rank={1} />
         <TeamSelect value={second} onChange={setSecond} rank={2} />
         <TeamSelect value={third} onChange={setThird} rank={3} />
@@ -143,7 +145,7 @@ export function GroupResultsAdmin({
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {groups.map((g) => {
           const groupTeams = teams.filter((t) => t.group === g);
           return (

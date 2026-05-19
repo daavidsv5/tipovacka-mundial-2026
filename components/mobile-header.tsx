@@ -21,10 +21,9 @@ export function MobileHeader({ players, isAdmin, currentUserId, userName = "", u
     <>
       <header className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 flex items-center justify-between px-4 h-16 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm">
-            <span className="text-base leading-none">⚽</span>
-          </div>
-          <span className="text-gray-900 font-bold text-sm">Tipovačka Mundial 2026</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/fifa-logo.webp" alt="FIFA WC 2026" width={32} height={32} className="object-contain shrink-0" />
+          <span className="text-gray-900 font-bold text-sm truncate max-w-[200px]">Tipovačka Mundial 2026</span>
         </div>
         <button
           onClick={() => setOpen(true)}

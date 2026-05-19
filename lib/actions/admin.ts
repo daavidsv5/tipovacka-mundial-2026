@@ -23,8 +23,7 @@ export async function saveMatchResult(matchId: string, homeScore: number, awaySc
 
   await recalculateMatchPoints(matchId, homeScore, awayScore);
 
-  revalidatePath("/");
-  revalidatePath("/vysledky");
+  revalidatePath("/", "layout");
   return { ok: true };
 }
 
@@ -36,7 +35,7 @@ export async function assignPlayoffTeam(matchId: string, side: "home" | "away", 
     data: side === "home" ? { homeTeamId: teamId } : { awayTeamId: teamId },
   });
 
-  revalidatePath("/vysledky");
+  revalidatePath("/", "layout");
   return { ok: true };
 }
 
@@ -245,6 +244,13 @@ export async function addPlayer(name: string, email: string, password: string) {
   return { ok: true, id: user.id };
 }
 
+export async function togglePlayerPayment(userId: string, hasPaid: boolean) {
+  await requireAdmin();
+  await prisma.user.update({ where: { id: userId }, data: { hasPaid } });
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
 export async function resetPlayerPassword(userId: string, newPassword: string) {
   await requireAdmin();
 
@@ -254,5 +260,30 @@ export async function resetPlayerPassword(userId: string, newPassword: string) {
     data: { passwordHash: hash },
   });
 
+  return { ok: true };
+}
+
+export async function deletePlayer(userId: string) {
+  await requireAdmin();
+
+  await prisma.user.delete({ where: { id: userId } });
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+  return { ok: true };
+}
+
+export async function resetAllPredictionsAndResults() {
+  await requireAdmin();
+
+  await prisma.tournamentPrediction.deleteMany();
+  await prisma.groupPrediction.deleteMany();
+  await prisma.matchPrediction.deleteMany();
+  await prisma.tournamentResult.deleteMany();
+  await prisma.groupResult.deleteMany();
+  await prisma.match.updateMany({ data: { homeScore: null, awayScore: null, isFinished: false } });
+  await prisma.user.updateMany({ where: { role: "PLAYER" }, data: { points: 0, exactMatches: 0 } });
+
+  revalidatePath("/", "layout");
   return { ok: true };
 }

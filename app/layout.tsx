@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="cs" className={`${plusJakartaSans.variable} h-full font-sans`}>
-      <body className="min-h-full bg-white text-gray-900 antialiased">
+      <body className="min-h-full bg-white text-gray-900 antialiased" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -70,16 +70,18 @@ export default function PravidlaPage() {
         <h2 className="text-gray-900 font-bold text-lg flex items-center gap-2">
           <span>💰</span> Rozdělení výher
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
-            { place: "1. místo", pct: "50 %", icon: "🥇", color: "text-yellow-500", bg: "bg-yellow-50 border-yellow-200" },
-            { place: "2. místo", pct: "30 %", icon: "🥈", color: "text-gray-500", bg: "bg-gray-50 border-gray-200" },
+            { place: "1. místo", pct: "40 %", icon: "🥇", color: "text-yellow-500", bg: "bg-yellow-50 border-yellow-200" },
+            { place: "2. místo", pct: "25 %", icon: "🥈", color: "text-gray-500", bg: "bg-gray-50 border-gray-200" },
             { place: "3. místo", pct: "20 %", icon: "🥉", color: "text-amber-600", bg: "bg-amber-50 border-amber-200" },
+            { place: "4. místo", pct: "10 %", icon: "4️⃣", color: "text-blue-500", bg: "bg-blue-50 border-blue-200" },
+            { place: "5. místo", pct: "5 %",  icon: "5️⃣", color: "text-indigo-500", bg: "bg-indigo-50 border-indigo-200" },
           ].map(({ place, pct, icon, color, bg }) => (
-            <div key={place} className={`border rounded-2xl p-5 text-center ${bg}`}>
-              <div className="text-3xl mb-2">{icon}</div>
-              <div className={`text-2xl font-black ${color}`}>{pct}</div>
-              <div className="text-gray-500 text-sm mt-1">{place}</div>
+            <div key={place} className={`border rounded-2xl p-4 text-center ${bg}`}>
+              <div className="text-2xl mb-1.5">{icon}</div>
+              <div className={`text-xl font-black ${color}`}>{pct}</div>
+              <div className="text-gray-500 text-xs mt-1">{place}</div>
             </div>
           ))}
         </div>

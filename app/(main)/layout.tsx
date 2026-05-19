@@ -7,6 +7,7 @@ import { MobileHeader } from "@/components/mobile-header";
 async function getPlayers() {
   try {
     return await prisma.user.findMany({
+      where: { role: "PLAYER" },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
     });

@@ -1,22 +1,42 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { addPlayer, resetPlayerPassword } from "@/lib/actions/admin";
-import { Plus, RefreshCw, Check, ExternalLink, Trophy, Target } from "lucide-react";
+import { addPlayer, resetPlayerPassword, togglePlayerPayment, deletePlayer } from "@/lib/actions/admin";
+import { Plus, RefreshCw, Check, ExternalLink, Trophy, Target, Banknote, Trash2 } from "lucide-react";
+
+const ENTRY_FEE = 400;
 
 function PlayerRow({ player }: { player: any }) {
   const [newPw, setNewPw] = useState("");
-  const [saved, setSaved] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [pwSaved, setPwSaved] = useState(false);
+  const [paid, setPaid] = useState(player.hasPaid ?? false);
+  const [isPendingPw, startPwTransition] = useTransition();
+  const [isPendingPay, startPayTransition] = useTransition();
+  const [isPendingDel, startDelTransition] = useTransition();
 
   const handleReset = () => {
     if (!newPw.trim()) return;
-    startTransition(async () => {
+    startPwTransition(async () => {
       await resetPlayerPassword(player.id, newPw);
       setNewPw("");
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      setPwSaved(true);
+      setTimeout(() => setPwSaved(false), 2000);
+    });
+  };
+
+  const handleDelete = () => {
+    if (!window.confirm(`Opravdu smazat hráče ${player.name}? Tato akce je nevratná.`)) return;
+    startDelTransition(async () => {
+      await deletePlayer(player.id);
+    });
+  };
+
+  const handleTogglePaid = () => {
+    const next = !paid;
+    startPayTransition(async () => {
+      await togglePlayerPayment(player.id, next);
+      setPaid(next);
     });
   };
 
@@ -27,7 +47,7 @@ function PlayerRow({ player }: { player: any }) {
   const avatarColor = AVATAR_COLORS[player.name.charCodeAt(0) % AVATAR_COLORS.length];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-blue-900 rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-4 flex-wrap">
         {/* Avatar + info */}
         <div className={`w-11 h-11 rounded-xl ${avatarColor} flex items-center justify-center text-white font-bold text-lg shrink-0`}>
@@ -39,7 +59,7 @@ function PlayerRow({ player }: { player: any }) {
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-3 text-sm">
           <div className="flex items-center gap-1.5 bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-1.5">
             <Trophy size={13} className="text-yellow-600" />
             <span className="font-bold text-yellow-700">{player.points}</span>
@@ -52,6 +72,20 @@ function PlayerRow({ player }: { player: any }) {
           </div>
         </div>
 
+        {/* Platba */}
+        <button
+          onClick={handleTogglePaid}
+          disabled={isPendingPay}
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold border transition-all disabled:opacity-50 ${
+            paid
+              ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+              : "bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          }`}
+        >
+          <Banknote size={14} />
+          {paid ? `Zaplaceno ${ENTRY_FEE} Kč` : "Nezaplaceno"}
+        </button>
+
         {/* Tlačítko tipy */}
         <Link
           href={`/hraci/${player.id}`}
@@ -61,22 +95,32 @@ function PlayerRow({ player }: { player: any }) {
           Upravit tipy
         </Link>
 
+        {/* Smazat hráče */}
+        <button
+          onClick={handleDelete}
+          disabled={isPendingDel}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-red-200 hover:bg-red-50 hover:border-red-400 text-red-400 hover:text-red-600 disabled:opacity-40 rounded-xl text-sm font-medium transition-all"
+        >
+          <Trash2 size={14} />
+          {isPendingDel ? "Mažu..." : "Smazat"}
+        </button>
+
         {/* Reset hesla */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <input
             type="password"
             value={newPw}
             onChange={(e) => setNewPw(e.target.value)}
             placeholder="Nové heslo"
-            className="bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-36"
+            className="bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1 sm:w-36"
           />
           <button
             onClick={handleReset}
-            disabled={isPending || !newPw.trim()}
+            disabled={isPendingPw || !newPw.trim()}
             className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-40 rounded-xl text-xs text-gray-600 font-medium transition-colors"
           >
-            {saved ? <Check size={13} className="text-green-600" /> : <RefreshCw size={13} />}
-            {saved ? "OK" : "Reset"}
+            {pwSaved ? <Check size={13} className="text-green-600" /> : <RefreshCw size={13} />}
+            {pwSaved ? "OK" : "Reset"}
           </button>
         </div>
       </div>
@@ -109,10 +153,47 @@ export function PlayersAdmin({ players }: { players: any[] }) {
     });
   };
 
+  const paidCount = players.filter((p) => p.hasPaid).length;
+  const prizePool = paidCount * ENTRY_FEE;
+
   return (
     <div className="space-y-6">
+      {/* Prize pool */}
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
+        <div className="px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+              <Banknote size={20} className="text-emerald-600" />
+            </div>
+            <div>
+              <div className="text-sm font-medium text-gray-500">Prize pool</div>
+              <div className="text-2xl font-black text-emerald-600">{prizePool.toLocaleString("cs-CZ")} Kč</div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-400">Zaplaceno</div>
+            <div className="text-xl font-bold text-gray-800">
+              {paidCount} / {players.length}
+              <span className="text-sm font-normal text-gray-400 ml-1">hráčů</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-400">Vklad</div>
+            <div className="text-xl font-bold text-gray-800">{ENTRY_FEE} Kč / hráč</div>
+          </div>
+        </div>
+        {players.length > 0 && (
+          <div className="h-2 bg-gray-100">
+            <div
+              className="h-2 bg-emerald-500 transition-all duration-500"
+              style={{ width: `${(paidCount / players.length) * 100}%` }}
+            />
+          </div>
+        )}
+      </div>
+
       {/* Přidat hráče */}
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
           <h3 className="font-semibold text-gray-800 flex items-center gap-2">
             <Plus size={16} />
@@ -126,7 +207,7 @@ export function PlayersAdmin({ players }: { players: any[] }) {
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Např. Kraťas"
+                placeholder="Např. Krašas"
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -172,7 +253,7 @@ export function PlayersAdmin({ players }: { players: any[] }) {
           <span className="ml-2 text-sm font-normal text-gray-400">({players.length})</span>
         </h3>
         {players.length === 0 ? (
-          <div className="text-gray-400 text-center py-12 bg-white border border-gray-200 rounded-2xl">
+          <div className="text-gray-400 text-center py-12 bg-white border border-blue-900 rounded-2xl">
             Žádní hráči zatím nejsou registrováni.
           </div>
         ) : (

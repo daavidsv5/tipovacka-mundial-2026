@@ -39,6 +39,7 @@ model User {
   role         Role     @default(PLAYER)
   points       Int      @default(0)
   exactMatches Int      @default(0)
+  hasPaid      Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   matchPredictions     MatchPrediction[]

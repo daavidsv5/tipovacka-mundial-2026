@@ -1,0 +1,83 @@
+# Architektura a Tech Stack Mundial 2026
+
+## 1. Tech Stack
+- Framework Next.js (App Router, verze 15  nejnovější)
+- Knihovna React 19
+- Jazyk TypeScript
+- Styling Tailwind CSS 4
+- Komponenty Radix UI (nebo shadcnui postavené na Radixu pro rychlejší vývoj s tmavým tématem)
+- Grafy Recharts (pro vizualizaci vývoje bodů hráčů v čase nebo zobrazení výherního poolu)
+- Autentizace NextAuth.js v5 (Auth.js) - Credentials provider (EmailHeslo)
+- Databáze PostgreSQL hostovaná na Neon.tech
+- ORM Prisma nebo Drizzle ORM (zvolte to, co lépe vyhovuje pro striktní typování s TypeScriptem v Next.js App Routeru)
+
+## 2. Návrh databázového schématu (High-level)
+
+### Tabulka `User`
+- `id` (UUID)
+- `name` (String)
+- `email` (String, unikátní)
+- `passwordHash` (String)
+- `role` (Enum ADMIN, PLAYER)
+- `points` (Int, default 0 - vypočítávané pole, případně se počítá dynamicky)
+- `exactMatches` (Int, default 0 - pro tiebreaker)
+
+### Tabulka `Team`
+- `id` (String)
+- `name` (String)
+- `flag` (String - emoji nebo ISO kód)
+- `group` (String A-L)
+
+### Tabulka `Match`
+- `id` (UUID)
+- `homeTeamId` (String, nullable pro play-off)
+- `awayTeamId` (String, nullable pro play-off)
+- `date` (DateTime)
+- `stage` (Enum GROUP, R32, R16, QF, SF, BRONZE, FINAL)
+- `homeScore` (Int, nullable)
+- `awayScore` (Int, nullable)
+- `isFinished` (Boolean, default false)
+
+### Tabulka `MatchPrediction`
+- `id` (UUID)
+- `userId` (UUID, FK - User)
+- `matchId` (UUID, FK - Match)
+- `homeScore` (Int)
+- `awayScore` (Int)
+- `pointsAwarded` (Int, default 0)
+
+### Tabulka `TournamentPrediction`
+- `id` (UUID)
+- `userId` (UUID, FK - User)
+- `czechPlacement` (Enum GROUP, R32, R16, QF, SF, FINAL)
+- `czechPointsAwarded` (Int)
+- `topScorer` (String)
+- `topScorerPointsAwarded` (Int)
+- `goldTeamId` (String, FK - Team)
+- `silverTeamId` (String, FK - Team)
+- `bronzeTeamId` (String, FK - Team)
+- `overallPointsAwarded` (Int)
+
+### Tabulka `GroupPrediction`
+- `id` (UUID)
+- `userId` (UUID, FK - User)
+- `group` (String A-L)
+- `firstPlaceTeamId` (String)
+- `secondPlaceTeamId` (String)
+- `thirdPlaceTeamId` (String, nullable)
+- `pointsAwarded` (Int)
+
+## 3. Výpočetní logika (Server Actions  API)
+- CalculateMatchPoints Při změně stavu zápasu administrátorem (zapsání skóre a označení `isFinished = true`) se spustí asynchronní úloha (Server Action), která projde všechny `MatchPrediction` pro daný zápas, porovná je s výsledkem a zapíše `pointsAwarded` dle pravidel (5, 3, 2, 0).
+- SumUserPoints Dynamická agregace všech získaných bodů (zápasy + skupiny + turnajové tipy) pro zobrazení na Dashboardu.
+
+## 4. Bezpečnost a Autentizace
+- Využití Next.js Middleware pro ochranu rout.
+- `admin` routy přístupné pouze uživateli s `role ADMIN`.
+- `hraci[id]` routy pro zápisúpravu tipů (POSTPUTPATCH metody) musí ověřovat, že `session.user.id === [id]` nebo `session.user.role === ADMIN`. Ostatní mají právo pouze na GET (čtení).
+
+## 5. UIUX Požadavky
+- Layout Root layout s pevnou postranní lištou a hlavním obsahovým oknem.
+- Téma Tailwind konfigurace rozšířená o tmavě modrou paletu (např. `bg-slate-900`, primární barva `blue-500` až `indigo-600`).
+- Responzivita Na zařízeních pod `md` breakpoint se sidebar mění na bottom navigation bar nebo hamburger menu.
+- Formuláře Validace tipů pomocí knihovny Zod před odesláním na server. Tipy lze editovat pouze pokud reálný zápas ještě nezačal (ověření času zápasu vs. aktuální čas).

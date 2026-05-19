@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { MatchPredictions } from "./match-predictions";
@@ -14,7 +14,8 @@ const TABS = [
 type Tab = (typeof TABS)[number]["id"];
 
 export function PlayerTabs({
-  player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction, canEdit,
+  player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction,
+  canEdit, canEditGroups, canEditTournament,
 }: {
   player: { id: string; name: string };
   matches: any[];
@@ -23,12 +24,14 @@ export function PlayerTabs({
   groupPredictions: any[];
   tournamentPrediction: any;
   canEdit: boolean;
+  canEditGroups: boolean;
+  canEditTournament: boolean;
 }) {
   const [active, setActive] = useState<Tab>("zapasy");
 
   return (
     <div>
-      <div className="flex bg-white border border-gray-200 rounded-2xl p-1.5 gap-1 shadow-sm">
+      <div className="flex bg-white border border-blue-900 rounded-2xl p-1.5 gap-1 shadow-sm">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -50,10 +53,10 @@ export function PlayerTabs({
           <MatchPredictions playerId={player.id} matches={matches} predictions={matchPredictions} canEdit={canEdit} />
         )}
         {active === "skupiny" && (
-          <GroupPredictions playerId={player.id} teams={teams} predictions={groupPredictions} canEdit={canEdit} />
+          <GroupPredictions playerId={player.id} teams={teams} predictions={groupPredictions} canEdit={canEditGroups} />
         )}
         {active === "turnaj" && (
-          <TournamentPredictions playerId={player.id} teams={teams} prediction={tournamentPrediction} canEdit={canEdit} />
+          <TournamentPredictions playerId={player.id} teams={teams} prediction={tournamentPrediction} canEdit={canEditTournament} />
         )}
       </div>
     </div>

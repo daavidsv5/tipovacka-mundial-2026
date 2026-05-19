@@ -1,0 +1,219 @@
+# Projekt: Mundial 2026 - Tipovací aplikace
+
+## 1. Účel aplikace
+Webová aplikace pro uzavřenou skupinu přátel sloužící k tipování výsledků Mistrovství světa ve fotbale 2026. Aplikace automaticky počítá body na základě zadaných výsledků a udržuje průběžný žebříček.
+
+## 2. Uživatelské role
+### Administrátor (1 uživatel)
+- Přidává a spravuje hráče (vygeneruje jim jméno a heslo, odesílá na email).
+- Zapisuje reálné výsledky zápasů a doplňuje týmy do vyřazovací fáze (play-off).
+- Může upravovat nebo mazat tipy všech hráčů (v případě chyb).
+- Po zadání výsledku systém automaticky přepočítá body všem hráčům.
+
+### Hráč (Základní: Negr, Kraťas, Pivoňa, Trevor + další přidávaní adminem)
+- Přihlašuje se přes vlastní údaje.
+- Vidí všechny sekce, ale tipovat (zapisovat/upravovat data) může **pouze ve své vlastní sekci**.
+- Nemůže nijak manipulovat s tipy ostatních hráčů.
+
+## 3. UI a Navigace
+- **Design:** Moderní, responzivní (mobile-first), dark-mode default (tmavě modrá tématika), nejmodernější UX.
+- **Rozložení:** Levý Sidebar (na mobilu hamburger menu) s následujícími položkami:
+  1. Žebříček hráčů (Dashboard)
+  2. Pravidla
+  3. Hráči (rozbalovací menu s jednotlivými hráči)
+  4. Výsledky (Přístupné všem pro čtení, zápis má pouze Admin)
+
+## 4. Specifikace jednotlivých sekcí
+
+### A. Žebříček hráčů (Hlavní Dashboard)
+- **KPI Boxy:**
+  - Počet odehraných zápasů (výpočet odehraných / celkový počet).
+  - Počet aktivních hráčů.
+- **Tabulka pořadí (Leaderboard):** Pořadí, Jméno hráče, Celkový počet bodů.
+- **Rozdělení výher (Prize pool):**
+  - 1. místo: 50 % z celkového vkladu
+  - 2. místo: 30 % z celkového vkladu
+  - 3. místo: 20 % z celkového vkladu
+
+### B. Výsledky (Admin zóna pro zadávání)
+- Seznam všech zápasů.
+- Admin zde zadává skóre po 90 minutách (pro základní skupiny i play-off).
+- U zápasů play-off admin dynamicky doplňuje postupující týmy.
+- Data odsud slouží jako "zdroj pravdy" pro automatický výpočet bodů u hráčů.
+
+### C. Hráči (Osobní sekce)
+- Každý hráč zde zadává své tipy. 
+- **Co se tipuje:**
+  - Přesné skóre zápasů (v play-off stav po 90 minutách, bez prodloužení a penalt).
+  - Postupující ze skupin (1., 2. místo a u osmi skupin i 3. místo. U 4 skupin 3. místo zůstane prázdné).
+  - Kde skončí reprezentace Česka: Výběr z (Základní skupina, Šestnáctifinále / 1. kolo, Osmifinále, Čtvrtfinále, Semifinále, Finále).
+  - Celkové pořadí turnaje: Zlato, Stříbro, Bronz.
+  - Nejlepší střelec turnaje (textové pole pro ruční zadání).
+
+### D. Pravidla
+Zde bude statický text s pravidly:
+- Na MS 2026 postupují první dva týmy ve skupině a 8 týmů ze třetích míst.
+- V play off se tipuje stav po 90 minutách hry (nepočítají se góly v prodloužení ani penalty).
+- Při rovnosti bodů v celkovém žebříčku rozhoduje větší počet uhodnutých *přesných výsledků*.
+- U nejlepšího střelce při shodě gólů rozhoduje: 1. počet asistencí, 2. odehraný čas (méně je více).
+
+**Bodový systém:**
+- Uhodnutí přesného výsledku utkání: 5 bodů
+- Uhodnutí brankového rozdílu (např. tip 2:1, výsledek 1:0): 3 body
+- Uhodnutí vítězství domácích/hostů nebo remízy: 2 body
+- Postup ze skupiny s přesným umístěním: 5 bodů
+- Umístění českého týmu na turnaji: 10 bodů za správný tip
+- Nejlepší střelec: 10 bodů za správný tip
+- Celkové pořadí turnaje (Zlato, Stříbro, Bronz): 10 bodů za správný tip u každé pozice.
+
+## 5. Zobrazení týmů
+- U každého týmu se musí zobrazovat jeho národní vlajka (využít existující knihovny jako `flag-icons` nebo emoji).
+
+## 6. Datová sada (Skupiny a formát zápasů)
+*Aplikace musí být předvyplněna těmito daty:*
+- Skupina A: Mexiko, JAR, Jižní Korea, ČESKO
+- Skupina B: Kanada, Katar, Švýcarsko, Bosna
+- Skupina C: Brazílie, Maroko, Haiti, Skotsko
+- Skupina D: USA, Paraguay, Austrálie, Turecko
+- Skupina E: Německo, Curaçao, Pobřeží slonoviny, Ekvádor
+- Skupina F: Nizozemsko, Japonsko, Tunisko, Švédsko
+- Skupina G: Belgie, Egypt, Írán, Nový Zéland
+- Skupina H: Španělsko, Kapverdy, Saúdská Arábie, Uruguay
+- Skupina I: Francie, Senegal, Norsko, Irák
+- Skupina J: Argentina, Alžírsko, Rakousko, Jordánsko
+- Skupina K: Portugalsko, Uzbekistán, Kolumbie, DR Kongo
+- Skupina L: Anglie, Chorvatsko, Ghana, Panama
+
+### 1. Základní skupiny (11. 6. – 28. 6.)
+| Datum / Čas | Místo | Skupina | Zápas |
+| :--- | :--- | :---: | :--- |
+| Čtvrtek 11. 6. / 21:00 | Mexiko | A | Mexiko - JAR |
+| Pátek 12. 6. / 4:00 | Guadalajara | A | Jižní Korea - ČESKO |
+| Pátek 12. 6. / 21:00 | Toronto | B | Kanada - Bosna a Hercegovina |
+| Sobota 13. 6. / 3:00 | Los Angeles | D | USA - Paraguay |
+| Sobota 13. 6. / 6:00 | Vancouver | D | Austrálie - Turecko |
+| Sobota 13. 6. / 21:00 | San Francisco | B | Katar - Švýcarsko |
+| Neděle 14. 6. / 0:00 | New York | C | Brazílie - Maroko |
+| Neděle 14. 6. / 3:00 | Boston | C | Haiti - Skotsko |
+| Neděle 14. 6. / 19:00 | Houston | E | Německo - Curacao |
+| Neděle 14. 6. / 22:00 | Dallas | F | Nizozemsko - Japonsko |
+| Pondělí 15. 6. / 1:00 | Filadelfie | E | Pobřeží slonoviny - Ekvádor |
+| Pondělí 15. 6. / 4:00 | Monterrey | F | Švédsko - Tunisko |
+| Pondělí 15. 6. / 18:00 | Atlanta | H | Španělsko – Kapverdy |
+| Pondělí 15. 6. / 21:00 | Seattle | G | Belgie - Egypt |
+| Úterý 16. 6. / 0:00 | Miami | H | Saúdská Arábie - Uruguay |
+| Úterý 16. 6. / 3:00 | Los Angeles | G | Írán - Nový Zéland |
+| Úterý 16. 6. / 21:00 | New York | I | Francie - Senegal |
+| Středa 17. 6. / 2:00 | Boston | I | Irák - Norsko |
+| Středa 17. 6. / 3:00 | Kansas City | J | Argentina - Alžírsko |
+| Středa 17. 6. / 6:00 | San Francisco | J | Rakousko - Jordánsko |
+| Středa 17. 6. / 19:00 | Houston | K | Portugalsko - Kongo |
+| Středa 17. 6. / 21:00 | Dallas | L | Anglie - Chorvatsko |
+| Čtvrtek 18. 6. / 1:00 | Toronto | L | Ghana - Panama |
+| Čtvrtek 18. 6. / 4:00 | Mexiko | K | Uzbekistán - Kolumbie |
+| Čtvrtek 18. 6. / 18:00 | Atlanta | A | ČESKO - JAR |
+| Čtvrtek 18. 6. / 21:00 | Los Angeles | B | Švýcarsko - Bosna a Hercegovina |
+| Pátek 19. 6. / 0:00 | Vancouver | B | Kanada - Katar |
+| Pátek 19. 6. / 4:00 | Guadalajara | A | Mexiko - Jižní Korea |
+| Pátek 19. 6. / 6:00 | San Francisco | D | Turecko - Paraguay |
+| Pátek 19. 6. / 21:00 | Seattle | D | USA - Austrálie |
+| Sobota 20. 6. / 0:00 | Boston | C | Skotsko - Maroko |
+| Sobota 20. 6. / 3:00 | Filadelfie | C | Brazílie - Haiti |
+| Sobota 20. 6. / 6:00 | Monterrey | F | Tunisko - Japonsko |
+| Sobota 20. 6. / 19:00 | Houston | F | Nizozemsko - Švédsko |
+| Sobota 20. 6. / 22:00 | Toronto | E | Německo - Pobřeží slonoviny |
+| Neděle 21. 6. / 2:00 | Kansas City | E | Ekvádor - Curacao |
+| Neděle 21. 6. / 18:00 | Atlanta | H | Španělsko - Saúdská Arábie |
+| Neděle 21. 6. / 21:00 | Los Angeles | G | Belgie - Írán |
+| Pondělí 22. 6. / 0:00 | Miami | H | Uruguay – Kapverdy |
+| Pondělí 22. 6. / 3:00 | Vancouver | G | Nový Zéland - Egypt |
+| Pondělí 22. 6. / 19:00 | Dallas | J | Argentina – Austrálie |
+| Pondělí 22. 6. / 23:00 | Filadelfie | I | Francie - Irák |
+| Úterý 23. 6. / 2:00 | New York | I | Norsko - Senegal |
+| Úterý 23. 6. / 3:00 | San Francisco | J | Jordánsko - Alžírsko |
+| Úterý 23. 6. / 19:00 | Houston | K | Portugalsko - Uzbekistán |
+| Úterý 23. 6. / 22:00 | Boston | L | Anglie - Ghana |
+| Středa 24. 6. / 1:00 | Toronto | L | Panama - Chorvatsko |
+| Středa 24. 6. / 4:00 | Guadalajara | K | Kolumbie - Kongo |
+| Středa 24. 6. / 21:00 | Vancouver | B | Švýcarsko - Kanada |
+| Středa 24. 6. / 21:00 | Seattle | B | Bosna a Hercegovina - Katar |
+| Čtvrtek 25. 6. / 0:00 | Miami | C | Skotsko - Brazílie |
+| Čtvrtek 25. 6. / 0:00 | Atlanta | C | Maroko - Haiti |
+| Čtvrtek 25. 6. / 3:00 | Mexiko | A | ČESKO - Mexiko |
+| Čtvrtek 25. 6. / 3:00 | Monterrey | A | JAR - Jižní Korea |
+| Čtvrtek 25. 6. / 22:00 | New York | E | Ekvádor - Německo |
+| Čtvrtek 25. 6. / 22:00 | Filadelfie | E | Curacao – Pobřeží slonoviny |
+| Pátek 26. 6. / 1:00 | Kansas City | F | Tunisko - Nizozemsko |
+| Pátek 26. 6. / 1:00 | Dallas | F | Japonsko - Švédsko |
+| Pátek 26. 6. / 4:00 | Los Angeles | D | Turecko - USA |
+| Pátek 26. 6. / 4:00 | San Francisco | D | Paraguay – Austrálie |
+| Pátek 26. 6. / 21:00 | Boston | I | Norsko - Francie |
+| Pátek 26. 6. / 21:00 | Toronto | I | Senegal - Irák |
+| Sobota 27. 6. / 2:00 | Guadalajara | H | Uruguay – Španělsko |
+| Sobota 27. 6. / 2:00 | Houston | H | Kapverdy – Saúdská Arábie |
+| Sobota 27. 6. / 5:00 | Seattle | G | Nový Zéland – Belgie |
+| Sobota 27. 6. / 5:00 | Vancouver | G | Egypt - Írán |
+| Sobota 27. 6. / 23:00 | New York | L | Panama - Anglie |
+| Sobota 27. 6. / 23:00 | Filadelfie | L | Chorvatsko - Ghana |
+| Neděle 28. 6. / 1:30 | Miami | K | Kolumbie - Portugalsko |
+| Neděle 28. 6. / 1:30 | Atlanta | K | Kongo - Uzbekistán |
+| Neděle 28. 6. / 4:00 | Dallas | J | Jordánsko – Argentina |
+| Neděle 28. 6. / 4:00 | Kansas City | J | Alžírsko – Rakousko |
+
+*(Týmy pro následující fáze play-off doplňuje administrátor podle reálného vývoje turnaje)*
+
+### 2. Šestnáctifinále (28. 6. – 4. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Neděle 28. 6. / 21:00 | Los Angeles | Šestnáctifinále 1 | `TBD` vs `TBD` |
+| Pondělí 29. 6. / 19:00 | Boston | Šestnáctifinále 2 | `TBD` vs `TBD` |
+| Pondělí 29. 6. / 23:30 | Houston | Šestnáctifinále 3 | `TBD` vs `TBD` |
+| Úterý 30. 6. / 3:00 | Monterrey | Šestnáctifinále 4 | `TBD` vs `TBD` |
+| Úterý 30. 6. / 19:00 | Dallas | Šestnáctifinále 5 | 2E vs 2I |
+| Úterý 30. 6. / 23:00 | New York | Šestnáctifinále 6 | `TBD` vs `TBD` |
+| Středa 1. 7. / 3:00 | Mexiko | Šestnáctifinále 7 | `TBD` vs `TBD` |
+| Středa 1. 7. / 18:00 | Atlanta | Šestnáctifinále 8 | `TBD` vs `TBD` |
+| Středa 1. 7. / 22:00 | Seattle | Šestnáctifinále 9 | `TBD` vs `TBD` |
+| Čtvrtek 2. 7. / 2:00 | San Francisco | Šestnáctifinále 10 | `TBD` vs `TBD` |
+| Čtvrtek 2. 7. / 21:00 | Los Angeles | Šestnáctifinále 11 | `TBD` vs `TBD` |
+| Pátek 3. 7. / 1:00 | Toronto | Šestnáctifinále 12 | `TBD` vs `TBD` |
+| Pátek 3. 7. / 5:00 | Vancouver | Šestnáctifinále 13 | `TBD` vs `TBD` |
+| Pátek 3. 7. / 20:00 | Dallas | Šestnáctifinále 14 | `TBD` vs `TBD` |
+| Sobota 4. 7. / 0:00 | Miami | Šestnáctifinále 15 | `TBD` vs `TBD` |
+| Sobota 4. 7. / 3:30 | Kansas City | Šestnáctifinále 16 | `TBD` vs `TBD` |
+
+### 3. Osmifinále (4. 7. – 7. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Sobota 4. 7. / 19:00 | Houston | Osmifinále 1 | `TBD` vs `TBD` |
+| Sobota 4. 7. / 23:00 | Filadelfie | Osmifinále 2 | `TBD` vs `TBD` |
+| Neděle 5. 7. / 22:00 | New York | Osmifinále 3 | `TBD` vs `TBD` |
+| Pondělí 6. 7. / 2:00 | Mexiko | Osmifinále 4 | `TBD` vs `TBD` |
+| Pondělí 6. 7. / 21:00 | Dallas | Osmifinále 5 | `TBD` vs `TBD` |
+| Úterý 7. 7. / 2:00 | Seattle | Osmifinále 6 | `TBD` vs `TBD` |
+| Úterý 7. 7. / 18:00 | Atlanta | Osmifinále 7 | Vítěz 14 vs `TBD` |
+| Úterý 7. 7. / 22:00 | Vancouver | Osmifinále 8 | `TBD` vs `TBD` |
+
+### 4. Čtvrtfinále (9. 7. – 12. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Čtvrtek 9. 7. / 22:00 | Boston | Čtvrtfinále 1 | `TBD` vs `TBD` |
+| Pátek 10. 7. / 21:00 | Los Angeles | Čtvrtfinále 2 | `TBD` vs `TBD` |
+| Sobota 11. 7. / 23:00 | Miami | Čtvrtfinále 3 | `TBD` vs `TBD` |
+| Neděle 12. 7. / 3:00 | Kansas City | Čtvrtfinále 4 | `TBD` vs `TBD` |
+
+### 5. Semifinále (14. 7. – 15. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Úterý 14. 7. / 21:00 | Dallas | Semifinále 1 | `TBD` vs `TBD` |
+| Středa 15. 7. / 21:00 | Atlanta | Semifinále 2 | `TBD` vs `TBD` |
+
+### 6. Zápas o bronz (18. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Sobota 18. 7. / 23:00 | Miami | O bronz | Poražený SF1 vs Poražený SF2 |
+
+### 7. Finále (19. 7.)
+| Datum / Čas | Místo | Fáze | Zápas |
+| :--- | :--- | :--- | :--- |
+| Neděle 19. 7. / 21:00 | New York | Finále | Vítěz SF1 vs Vítěz SF2 |
