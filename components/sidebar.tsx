@@ -23,9 +23,10 @@ interface SidebarProps {
   currentUserId: string;
   userName: string;
   userEmail: string;
+  onClose?: () => void;
 }
 
-export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }: SidebarProps) {
+export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail, onClose }: SidebarProps) {
   const pathname = usePathname();
   const [playersOpen, setPlayersOpen] = useState(true);
 
@@ -34,6 +35,7 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
     return (
       <Link
         href={href}
+        onClick={() => onClose?.()}
         className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-[17px] font-medium transition-all ${
           active
             ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
@@ -56,20 +58,17 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
     <aside className="flex flex-col h-full bg-[#0d1f45]">
       {/* Logo */}
       <div className="px-5 py-6 border-b border-white/[0.07]">
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/fifa-logo.webp"
             alt="FIFA WC 2026"
-            width={44}
-            height={44}
+            width={48}
+            height={48}
             className="object-contain shrink-0"
             style={{ filter: "invert(1)" }}
           />
-          <div className="min-w-0">
-            <div className="text-white font-black text-xl leading-tight tracking-tight">Tipovačka</div>
-            <div className="text-blue-400 text-sm font-medium">Mundial 2026</div>
-          </div>
+          <span className="text-white font-bold text-base">Tipovačka Mundial 2026</span>
         </div>
       </div>
 
@@ -106,6 +105,7 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail }
                 <Link
                   key={p.id}
                   href={href}
+                  onClick={() => onClose?.()}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] transition-all ${
                     active
                       ? "bg-blue-600/20 text-blue-300 font-semibold"

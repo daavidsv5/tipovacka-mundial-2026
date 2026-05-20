@@ -48,7 +48,7 @@ export function MobileHeader({ players, isAdmin, currentUserId, userName = "", u
             >
               <X size={18} />
             </button>
-            <Sidebar players={players} isAdmin={isAdmin} currentUserId={currentUserId} userName={userName} userEmail={userEmail} />
+            <Sidebar players={players} isAdmin={isAdmin} currentUserId={currentUserId} userName={userName} userEmail={userEmail} onClose={() => setOpen(false)} />
           </div>
         </div>
       )}

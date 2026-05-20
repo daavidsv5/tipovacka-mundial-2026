@@ -99,6 +99,14 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 
 - **Orámování karet** – všude `border-blue-900` (plná tmavě modrá, bez opacity). Nepoužívat `border-blue-900/30` ani jiné varianty s opacitou.
 - **Rank indikátory ve skupinách** – místo emoji medailí (🥇🥈🥉) se používají barevné kroužky s číslem: žlutý (1), šedý (2), oranžový (3). Třídy: `border-yellow-400 text-yellow-500` / `border-gray-300 text-gray-400` / `border-amber-400 text-amber-600`.
+- **Admin karty zápasů** – stejná struktura jako hráčské karty: horní lišta (skupina/fáze + datum), střed (domácí tým vpravo | skóre inputy | hosté vlevo), spodní lišta (stav + akce). Inputy `w-12 h-10 border-2 border-gray-200 rounded-xl`.
+- **Logo v sidebaru** – jeden řádek „Tipovačka Mundial 2026", `font-bold text-base`, obrázek 48px s `filter: invert(1)`. Stejný styl jako na login stránce.
+
+## Mobilní responsivita
+
+- `body` má `overflow-x: hidden` v `globals.css` – pojistka proti horizontálnímu scrollu.
+- `Sidebar` přijímá `onClose?: () => void` – volá se při kliknutí na jakýkoliv navigační odkaz (hlavní sekce i hráči). `MobileHeader` předává `onClose={() => setOpen(false)}`.
+- Admin tipy hráčů (`PlayerPredictionRow`) mají dvouřádkový layout: jméno + body badge nahoře, inputy + uložit dole (odsazení `ml-8`). Nedochází k přetečení na žádné šířce.
 
 ## Deployment (Vercel)
 
