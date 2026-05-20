@@ -73,10 +73,9 @@ function ScoreInputCard({
         <span className="text-xs text-gray-900 font-bold tabular-nums shrink-0">{dateStr} • {timeStr}</span>
       </div>
 
-      {/* Main row: teams + score */}
+      {/* Střed: týmy přes celou šířku (jako ve výsledcích) */}
       <div className="flex items-center px-3 sm:px-5 pb-3 gap-2 sm:gap-3">
-        {/* Home team */}
-        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 justify-end min-w-0">
+        <div className="flex-1 flex items-center gap-1.5 justify-end min-w-0">
           <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate text-right leading-tight">
             {homeTeam?.name ?? "TBD"}
           </span>
@@ -85,48 +84,27 @@ function ScoreInputCard({
             : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
         </div>
 
-        {/* Score / inputs */}
-        <div className="shrink-0 flex items-center gap-1.5">
+        {/* Střed: skóre / vs / zámek */}
+        <div className="shrink-0 flex items-center gap-1">
           {isFinished ? (
-            <div className="flex items-center gap-1">
-              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
-                {realHome}
-              </span>
+            <>
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{realHome}</span>
               <span className="text-gray-400 font-light text-base">:</span>
-              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
-                {realAway}
-              </span>
-            </div>
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{realAway}</span>
+            </>
           ) : isLocked ? (
             <div className="inline-flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-xl px-2.5 py-1.5">
               <Lock size={11} className="text-gray-400 shrink-0" />
-              {hasPrediction ? (
-                <span className="text-gray-600 text-sm font-semibold tabular-nums">{initHome}:{initAway}</span>
-              ) : (
-                <span className="text-gray-400 text-xs">—</span>
-              )}
+              {hasPrediction
+                ? <span className="text-gray-600 text-sm font-semibold tabular-nums">{initHome}:{initAway}</span>
+                : <span className="text-gray-400 text-xs">—</span>}
             </div>
           ) : (
-            <div className="flex items-center gap-1">
-              <input
-                type="number" min={0} max={20} value={home}
-                onChange={(e) => setHome(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
-              />
-              <span className="text-gray-300 font-light text-base">:</span>
-              <input
-                type="number" min={0} max={20} value={away}
-                onChange={(e) => setAway(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
-              />
-            </div>
+            <div className="bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-gray-400 font-medium text-sm">vs</div>
           )}
         </div>
 
-        {/* Away team */}
-        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+        <div className="flex-1 flex items-center gap-1.5 min-w-0">
           {awayTeam
             ? <span className={`fi fi-${awayTeam.flag} rounded shrink-0`} style={{ fontSize: "1rem" }} />
             : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
@@ -134,20 +112,35 @@ function ScoreInputCard({
             {awayTeam?.name ?? "TBD"}
           </span>
         </div>
+      </div>
 
-        {/* Save button (only when editable) */}
-        {!isFinished && !isLocked && canEdit && (
+      {/* Spodní pás: inputy (jen když lze editovat) */}
+      {!isFinished && !isLocked && canEdit && (
+        <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 bg-gray-50 border-t border-gray-100">
+          <input
+            type="number" min={0} max={20} value={home}
+            onChange={(e) => setHome(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSave()}
+            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+          />
+          <span className="text-gray-300 font-light text-lg">:</span>
+          <input
+            type="number" min={0} max={20} value={away}
+            onChange={(e) => setAway(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSave()}
+            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+          />
           <button
             onClick={handleSave}
             disabled={isPending}
-            className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center transition-colors shadow-sm"
+            className="w-9 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center transition-colors shadow-sm"
           >
-            <Check size={14} className="text-white" />
+            <Check size={15} className="text-white" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Bottom row: status + points */}
+      {/* Spodní pás: stav + body */}
       {(isFinished || (isLocked && hasPrediction)) && (
         <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 bg-gray-50 border-t border-gray-100">
           {isFinished && (

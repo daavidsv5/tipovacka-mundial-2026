@@ -56,24 +56,20 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
   return (
     <div className="space-y-6">
       {/* Player header */}
-      <div className="bg-white border border-blue-900/30 rounded-2xl p-5 sm:p-7 shadow-sm">
-        <div className="flex items-center gap-4 sm:gap-6">
-          <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${avatarColor} flex items-center justify-center text-2xl sm:text-3xl font-black text-white shrink-0 shadow-sm`}>
+      <div className="bg-white border border-blue-900 rounded-2xl p-4 sm:p-6 shadow-sm">
+        <div className="flex items-center gap-3 sm:gap-5">
+          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${avatarColor} flex items-center justify-center text-xl sm:text-2xl font-black text-white shrink-0 shadow-sm`}>
             {data.player.name[0].toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{data.player.name}</h1>
-            <p className="text-gray-500 text-sm mt-0.5">Tipování zápasů a turnaje</p>
-          </div>
-          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-            <div className="text-center">
-              <div className="text-2xl sm:text-3xl font-black text-yellow-500">{data.player.points ?? 0}</div>
-              <div className="text-gray-400 text-xs mt-0.5 font-medium">bodů</div>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-gray-200" />
-            <div className="hidden sm:block text-center">
-              <div className="text-3xl font-black text-gray-900">{data.player.exactMatches ?? 0}</div>
-              <div className="text-gray-400 text-xs mt-0.5 font-medium">přesných</div>
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">{data.player.name}</h1>
+            <div className="flex items-center gap-3 mt-1">
+              <span className="text-xs font-bold text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-lg px-2 py-0.5">
+                {data.player.points ?? 0} b.
+              </span>
+              <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg px-2 py-0.5">
+                {data.player.exactMatches ?? 0} přesných
+              </span>
             </div>
           </div>
         </div>
