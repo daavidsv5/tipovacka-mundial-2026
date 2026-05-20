@@ -106,18 +106,18 @@ function PlayerRow({ player }: { player: any }) {
         </button>
 
         {/* Reset hesla */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full">
           <input
             type="password"
             value={newPw}
             onChange={(e) => setNewPw(e.target.value)}
             placeholder="Nové heslo"
-            className="bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1 sm:w-36"
+            className="bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1 min-w-0"
           />
           <button
             onClick={handleReset}
             disabled={isPendingPw || !newPw.trim()}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-40 rounded-xl text-xs text-gray-600 font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-40 rounded-xl text-xs text-gray-600 font-medium transition-colors shrink-0"
           >
             {pwSaved ? <Check size={13} className="text-green-600" /> : <RefreshCw size={13} />}
             {pwSaved ? "OK" : "Reset"}

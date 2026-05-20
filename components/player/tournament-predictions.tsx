@@ -75,11 +75,11 @@ export function TournamentPredictions({
           </span>
         )}
         {canEdit && (
-          <div className="relative shrink-0">
+          <div className="relative shrink-0 w-full max-w-[160px]">
             <select
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="appearance-none bg-white border border-gray-300 rounded-xl pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer max-w-[170px]"
+              className="w-full appearance-none bg-white border border-gray-300 rounded-xl pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
             >
               <option value="">— vybrat —</option>
               {podiumOptions(value).map((t: any) => (

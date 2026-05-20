@@ -144,11 +144,11 @@ function MatchRow({
   const availableTeams = teams.filter((t) => match.stage === "GROUP" ? t.group === match.groupName : true);
 
   const TeamSelect = ({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) => (
-    <div className="relative">
+    <div className="relative w-full max-w-[140px]">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-7 py-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500 cursor-pointer max-w-[150px]"
+        className="w-full appearance-none bg-white border border-gray-200 rounded-xl pl-3 pr-7 py-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500 cursor-pointer"
       >
         <option value="">{placeholder}</option>
         {availableTeams.map((t: any) => (

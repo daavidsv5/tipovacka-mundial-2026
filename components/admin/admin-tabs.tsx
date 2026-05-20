@@ -46,12 +46,12 @@ export function AdminTabs({
   return (
     <div>
       {/* Tab navigation */}
-      <div className="flex bg-white border border-blue-900 rounded-2xl p-1.5 gap-1 shadow-sm w-fit flex-wrap">
+      <div className="grid grid-cols-2 sm:flex bg-white border border-blue-900 rounded-2xl p-1.5 gap-1 shadow-sm">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActive(tab.id)}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               active === tab.id
                 ? "bg-blue-600 text-white shadow-sm"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
