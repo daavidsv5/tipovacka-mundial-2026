@@ -47,37 +47,41 @@ function MatchCard({ match }: { match: any }) {
 
   return (
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${match.isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
-      <div className="flex items-center justify-between px-5 pt-3.5 pb-2">
+      <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {match.groupName ? (
-          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Skupina {match.groupName}</span>
+          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Sk. {match.groupName}</span>
         ) : (
           <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{STAGE_LABELS[match.stage]}</span>
         )}
         <span className="text-xs text-gray-900 font-bold tabular-nums shrink-0">{dateStr} • {timeStr}</span>
       </div>
-      <div className="flex items-center px-5 pb-3.5 gap-3">
-        <div className="flex-1 flex items-center gap-2.5 justify-end min-w-0">
-          <span className="text-gray-900 font-semibold text-sm truncate text-right leading-tight">{match.homeTeam?.name ?? "TBD"}</span>
-          {match.homeTeam ? <FlagIcon code={match.homeTeam.flag} /> : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
+      <div className="flex items-center px-3 sm:px-5 pb-3 gap-2 sm:gap-3">
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 justify-end min-w-0">
+          <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate text-right leading-tight">{match.homeTeam?.name ?? "TBD"}</span>
+          {match.homeTeam
+            ? <span className={`fi fi-${match.homeTeam.flag} rounded shrink-0`} style={{ fontSize: "1rem" }} />
+            : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
         </div>
-        <div className="shrink-0 flex items-center gap-1.5">
+        <div className="shrink-0 flex items-center gap-1">
           {match.isFinished ? (
             <>
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{match.homeScore}</span>
-              <span className="text-gray-400 font-light text-lg">:</span>
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{match.awayScore}</span>
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{match.homeScore}</span>
+              <span className="text-gray-400 font-light text-base">:</span>
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">{match.awayScore}</span>
             </>
           ) : (
-            <div className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-400 font-medium text-sm">vs</div>
+            <div className="bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-gray-400 font-medium text-sm">vs</div>
           )}
         </div>
-        <div className="flex-1 flex items-center gap-2.5 min-w-0">
-          {match.awayTeam ? <FlagIcon code={match.awayTeam.flag} /> : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
-          <span className="text-gray-900 font-semibold text-sm truncate leading-tight">{match.awayTeam?.name ?? "TBD"}</span>
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+          {match.awayTeam
+            ? <span className={`fi fi-${match.awayTeam.flag} rounded shrink-0`} style={{ fontSize: "1rem" }} />
+            : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
+          <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate leading-tight">{match.awayTeam?.name ?? "TBD"}</span>
         </div>
       </div>
       {match.isFinished && (
-        <div className="flex items-center justify-center gap-2 px-5 py-2 bg-gray-50 border-t border-gray-100">
+        <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 bg-gray-50 border-t border-gray-100">
           <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1"><Check size={11} /> Hotovo</span>
           {match.location && (
             <>

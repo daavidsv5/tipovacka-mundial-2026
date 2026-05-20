@@ -162,9 +162,9 @@ function MatchRow({
   return (
     <div className="bg-white rounded-2xl border border-blue-900 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       {/* Top row: skupina/fáze + číslo zápasu + datum */}
-      <div className="flex items-center justify-between px-5 pt-3.5 pb-2">
+      <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {match.groupName ? (
-          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Skupina {match.groupName}</span>
+          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Sk. {match.groupName}</span>
         ) : (
           <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{STAGE_LABELS[match.stage]}</span>
         )}
@@ -174,52 +174,52 @@ function MatchRow({
       </div>
 
       {/* Střed: domácí | skóre | hosté */}
-      <div className="flex items-center px-5 pb-3.5 gap-3">
+      <div className="flex items-center px-3 sm:px-5 pb-3 gap-2 sm:gap-3">
         {/* Domácí */}
-        <div className="flex-1 flex items-center gap-2.5 justify-end min-w-0">
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 justify-end min-w-0">
           {isPlayoff && !match.homeTeam ? (
             <TeamSelect value={homeTeamId} onChange={setHomeTeamId} placeholder="— domácí —" />
           ) : (
             <>
-              <span className="text-gray-900 font-semibold text-sm truncate text-right leading-tight">
+              <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate text-right leading-tight">
                 {match.homeTeam?.name ?? "TBD"}
               </span>
               {match.homeTeam
                 ? <FlagIcon code={match.homeTeam.flag} />
-                : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
+                : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
             </>
           )}
         </div>
 
         {/* Skóre vstupy */}
-        <div className="shrink-0 flex items-center gap-1.5">
+        <div className="shrink-0 flex items-center gap-1">
           <input
             type="number" min={0} value={home}
             onChange={(e) => setHome(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
             placeholder="—"
-            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+            className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
           />
-          <span className="text-gray-300 font-light text-lg">:</span>
+          <span className="text-gray-300 font-light text-base">:</span>
           <input
             type="number" min={0} value={away}
             onChange={(e) => setAway(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
             placeholder="—"
-            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+            className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
           />
         </div>
 
         {/* Hosté */}
-        <div className="flex-1 flex items-center gap-2.5 min-w-0">
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 min-w-0">
           {isPlayoff && !match.awayTeam ? (
             <TeamSelect value={awayTeamId} onChange={setAwayTeamId} placeholder="— hosté —" />
           ) : (
             <>
               {match.awayTeam
                 ? <FlagIcon code={match.awayTeam.flag} />
-                : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
-              <span className="text-gray-900 font-semibold text-sm truncate leading-tight">
+                : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
+              <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate leading-tight">
                 {match.awayTeam?.name ?? "TBD"}
               </span>
             </>

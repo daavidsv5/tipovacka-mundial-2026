@@ -58,15 +58,15 @@ function ScoreInputCard({
   const isLocked = locked && !canEdit;
   const hasPrediction = initHome !== null && initAway !== null;
 
-  const dateStr = date.toLocaleDateString("cs-CZ", { day: "numeric", month: "numeric", year: "numeric", timeZone: "Europe/Prague" });
+  const dateStr = date.toLocaleDateString("cs-CZ", { day: "numeric", month: "numeric", timeZone: "Europe/Prague" });
   const timeStr = date.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
 
   return (
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
       {/* Top row: group + date */}
-      <div className="flex items-center justify-between px-5 pt-3.5 pb-2">
+      <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {groupName ? (
-          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Skupina {groupName}</span>
+          <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Sk. {groupName}</span>
         ) : (
           <span className="text-xs font-bold text-gray-400 tracking-wide uppercase">{STAGE_LABELS[stage]}</span>
         )}
@@ -74,32 +74,32 @@ function ScoreInputCard({
       </div>
 
       {/* Main row: teams + score */}
-      <div className="flex items-center px-5 pb-3.5 gap-3">
+      <div className="flex items-center px-3 sm:px-5 pb-3 gap-2 sm:gap-3">
         {/* Home team */}
-        <div className="flex-1 flex items-center gap-2.5 justify-end min-w-0">
-          <span className="text-gray-900 font-semibold text-sm truncate text-right leading-tight">
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 justify-end min-w-0">
+          <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate text-right leading-tight">
             {homeTeam?.name ?? "TBD"}
           </span>
-          {homeTeam ? <FlagIcon code={homeTeam.flag} /> : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
+          {homeTeam
+            ? <span className={`fi fi-${homeTeam.flag} rounded shrink-0`} style={{ fontSize: "1rem" }} />
+            : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
         </div>
 
         {/* Score / inputs */}
-        <div className="shrink-0 flex items-center gap-2">
+        <div className="shrink-0 flex items-center gap-1.5">
           {isFinished ? (
-            // Finished: show real score as dark pill
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
+            <div className="flex items-center gap-1">
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
                 {realHome}
               </span>
-              <span className="text-gray-400 font-light text-lg">:</span>
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
+              <span className="text-gray-400 font-light text-base">:</span>
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-900 text-white font-bold text-sm tabular-nums">
                 {realAway}
               </span>
             </div>
           ) : isLocked ? (
-            // Locked: show tip or lock icon
-            <div className="inline-flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-xl px-3 py-2">
-              <Lock size={12} className="text-gray-400 shrink-0" />
+            <div className="inline-flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-xl px-2.5 py-1.5">
+              <Lock size={11} className="text-gray-400 shrink-0" />
               {hasPrediction ? (
                 <span className="text-gray-600 text-sm font-semibold tabular-nums">{initHome}:{initAway}</span>
               ) : (
@@ -107,29 +107,30 @@ function ScoreInputCard({
               )}
             </div>
           ) : (
-            // Editable inputs
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <input
                 type="number" min={0} max={20} value={home}
                 onChange={(e) => setHome(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+                className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
               />
-              <span className="text-gray-300 font-light text-lg">:</span>
+              <span className="text-gray-300 font-light text-base">:</span>
               <input
                 type="number" min={0} max={20} value={away}
                 onChange={(e) => setAway(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+                className="w-10 h-9 sm:w-12 sm:h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
               />
             </div>
           )}
         </div>
 
         {/* Away team */}
-        <div className="flex-1 flex items-center gap-2.5 min-w-0">
-          {awayTeam ? <FlagIcon code={awayTeam.flag} /> : <span className="w-5 h-4 bg-gray-100 rounded shrink-0" />}
-          <span className="text-gray-900 font-semibold text-sm truncate leading-tight">
+        <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+          {awayTeam
+            ? <span className={`fi fi-${awayTeam.flag} rounded shrink-0`} style={{ fontSize: "1rem" }} />
+            : <span className="w-4 h-3 bg-gray-100 rounded shrink-0" />}
+          <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate leading-tight">
             {awayTeam?.name ?? "TBD"}
           </span>
         </div>
@@ -139,16 +140,16 @@ function ScoreInputCard({
           <button
             onClick={handleSave}
             disabled={isPending}
-            className="shrink-0 w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center transition-colors shadow-sm"
+            className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center transition-colors shadow-sm"
           >
-            <Check size={15} className="text-white" />
+            <Check size={14} className="text-white" />
           </button>
         )}
       </div>
 
-      {/* Bottom row: status + points (only when finished or locked) */}
+      {/* Bottom row: status + points */}
       {(isFinished || (isLocked && hasPrediction)) && (
-        <div className="flex items-center justify-center gap-2 px-5 py-2 bg-gray-50 border-t border-gray-100">
+        <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 bg-gray-50 border-t border-gray-100">
           {isFinished && (
             <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
               <Check size={11} /> Uzavřeno
