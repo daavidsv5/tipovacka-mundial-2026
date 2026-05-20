@@ -104,9 +104,15 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 
 ## Mobilní responsivita
 
-- `body` má `overflow-x: hidden` v `globals.css` – pojistka proti horizontálnímu scrollu.
+- `html` i `body` mají `overflow-x: hidden` + `body` má `max-width: 100vw` – fix pro iOS Safari i Android Chrome.
 - `Sidebar` přijímá `onClose?: () => void` – volá se při kliknutí na jakýkoliv navigační odkaz (hlavní sekce i hráči). `MobileHeader` předává `onClose={() => setOpen(false)}`.
 - Admin tipy hráčů (`PlayerPredictionRow`) mají dvouřádkový layout: jméno + body badge nahoře, inputy + uložit dole (odsazení `ml-8`). Nedochází k přetečení na žádné šířce.
+- Všechny `<select>` elementy mají `w-full` uvnitř wrapperu s `max-w-[140px]` (nebo podobnou hodnotou) – zabraňuje přetékání přes `flex-1 min-w-0` rodiče.
+- Admin tabs: `grid-cols-2` na mobilu, `flex` na desktopu – tab bar nikdy nepřetéká viewport.
+- **Match karty – datový formát**: datum bez roku (`day: "numeric", month: "numeric"`), skupina zkrácena na „Sk. X".
+- **Match karty – responsivní velikosti**: `px-3 sm:px-5`, `gap-2 sm:gap-3`, team název `text-xs sm:text-sm`, skóre boxy `w-8 h-8 sm:w-9 sm:h-9`.
+- **ScoreInputCard (hráčský pohled)**: týmy jsou v samostatném středovém řádku přes celou šířku (jako ve Výsledcích – badge `vs` pro nadcházející zápasy). Inputy pro tipování jsou ve **spodním pásu karty** oddělené od řádku s týmy – eliminuje přetékání na mobilu.
+- **Player header** (`hraci/[id]/page.tsx`): kompaktní layout `p-4 sm:p-6`, avatar `w-12 sm:w-14`, body a přesných tipů zobrazeny jako malé barevné badge tagy pod jménem (ne jako velká čísla v separátní sekci).
 
 ## Deployment (Vercel)
 
