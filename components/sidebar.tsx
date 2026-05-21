@@ -13,6 +13,7 @@ import {
   ChevronRight,
   LogOut,
   Users,
+  KeyRound,
 } from "lucide-react";
 
 type Player = { id: string; name: string };
@@ -59,16 +60,20 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail, 
       {/* Logo */}
       <div className="px-5 py-6 border-b border-white/[0.07]">
         <div className="flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/fifa-logo.webp"
-            alt="FIFA WC 2026"
-            width={48}
-            height={48}
-            className="object-contain shrink-0"
-            style={{ filter: "invert(1)" }}
-          />
-          <span className="text-white font-bold text-base">Tipovačka Mundial 2026</span>
+          <div className="bg-white rounded-xl p-1.5 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/fifa-logo.webp"
+              alt="FIFA WC 2026"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="text-white font-bold text-lg">Tipovačka</span>
+            <span className="text-white font-bold text-lg">Mundial 2026</span>
+          </div>
         </div>
       </div>
 
@@ -138,7 +143,19 @@ export function Sidebar({ players, isAdmin, currentUserId, userName, userEmail, 
           <div className="text-white font-bold text-[17px] leading-tight truncate">{userName}</div>
           <div className="text-blue-400 text-[13px] mt-0.5 truncate">{userEmail}</div>
         </div>
-        <div className="px-3 pb-4">
+        <div className="px-3 pb-4 space-y-1">
+          <Link
+            href="/nastaveni"
+            onClick={() => onClose?.()}
+            className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[15px] font-medium transition-all ${
+              pathname === "/nastaveni"
+                ? "bg-blue-600/20 text-blue-300"
+                : "text-slate-400 hover:text-white hover:bg-white/[0.07]"
+            }`}
+          >
+            <KeyRound size={17} className="shrink-0" />
+            Změnit heslo
+          </Link>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-[15px] font-medium text-slate-400 hover:text-red-400 hover:bg-red-400/[0.06] transition-all"

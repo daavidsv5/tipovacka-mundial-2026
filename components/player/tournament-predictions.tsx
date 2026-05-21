@@ -27,6 +27,11 @@ export function TournamentPredictions({
   const [gold, setGold] = useState(prediction?.goldTeamId ?? "");
   const [silver, setSilver] = useState(prediction?.silverTeamId ?? "");
   const [bronze, setBronze] = useState(prediction?.bronzeTeamId ?? "");
+  const [totalGoals, setTotalGoals] = useState<string>(
+    prediction?.totalGoals !== null && prediction?.totalGoals !== undefined
+      ? String(prediction.totalGoals)
+      : ""
+  );
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -38,6 +43,7 @@ export function TournamentPredictions({
         goldTeamId: gold || undefined,
         silverTeamId: silver || undefined,
         bronzeTeamId: bronze || undefined,
+        totalGoals: totalGoals !== "" ? parseInt(totalGoals, 10) : null,
         targetUserId: playerId,
       });
       setSaved(true);
@@ -175,6 +181,36 @@ export function TournamentPredictions({
           {prediction?.topScorerPointsAwarded > 0 && (
             <div className="mt-3 text-emerald-700 text-sm font-semibold">
               ✓ +{prediction.topScorerPointsAwarded} bodů!
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Počet gólů */}
+      <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
+          <h3 className="text-gray-800 font-bold">🎯 Počet gólů v turnaji</h3>
+          <span className="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg font-semibold">+10 b. (tolerance ±10)</span>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-500 text-sm mb-4">Tipni celkový počet gólů vstřelených na celém turnaji.</p>
+          {canEdit ? (
+            <input
+              type="number"
+              min={0}
+              value={totalGoals}
+              onChange={(e) => setTotalGoals(e.target.value)}
+              placeholder="Např. 180"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3.5 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          ) : (
+            <div className="px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-700 text-sm font-medium">
+              {totalGoals !== "" ? `${totalGoals} gólů` : "— nezadáno —"}
+            </div>
+          )}
+          {prediction?.totalGoalsPointsAwarded > 0 && (
+            <div className="mt-3 text-emerald-700 text-sm font-semibold">
+              ✓ +{prediction.totalGoalsPointsAwarded} bodů!
             </div>
           )}
         </div>

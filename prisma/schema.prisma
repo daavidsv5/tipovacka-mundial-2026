@@ -133,6 +133,8 @@ model TournamentPrediction {
   silverTeamId           String?
   bronzeTeamId           String?
   overallPointsAwarded   Int             @default(0)
+  totalGoals             Int?
+  totalGoalsPointsAwarded Int            @default(0)
 
   user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   goldTeam   Team? @relation("GoldTeam", fields: [goldTeamId], references: [id])
@@ -158,6 +160,7 @@ model TournamentResult {
   goldTeamId     String?
   silverTeamId   String?
   bronzeTeamId   String?
+  totalGoals     Int?
 
   goldTeam   Team? @relation("TRGold",   fields: [goldTeamId],   references: [id])
   silverTeam Team? @relation("TRSilver", fields: [silverTeamId], references: [id])

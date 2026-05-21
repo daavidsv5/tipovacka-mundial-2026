@@ -60,6 +60,9 @@ export function TournamentResultsAdmin({
   const [gold, setGold] = useState(existing?.goldTeamId ?? "");
   const [silver, setSilver] = useState(existing?.silverTeamId ?? "");
   const [bronze, setBronze] = useState(existing?.bronzeTeamId ?? "");
+  const [totalGoals, setTotalGoals] = useState<string>(
+    existing?.totalGoals !== null && existing?.totalGoals !== undefined ? String(existing.totalGoals) : ""
+  );
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -71,6 +74,7 @@ export function TournamentResultsAdmin({
         goldTeamId: gold || null,
         silverTeamId: silver || null,
         bronzeTeamId: bronze || null,
+        totalGoals: totalGoals !== "" ? parseInt(totalGoals, 10) : null,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -155,6 +159,26 @@ export function TournamentResultsAdmin({
                 value={topScorer}
                 onChange={(e) => setTopScorer(e.target.value)}
                 placeholder="Např. Kylian Mbappé"
+                className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+              <h3 className="font-semibold text-gray-800">🎯 Počet gólů v turnaji</h3>
+              <p className="text-xs text-gray-500 mt-0.5">Hráč dostane 10 bodů při odchylce max. ±10 gólů</p>
+            </div>
+            <div className="p-6">
+              <label className="block text-sm font-medium text-gray-600 mb-1.5">
+                Celkový počet gólů
+              </label>
+              <input
+                type="number"
+                min={0}
+                value={totalGoals}
+                onChange={(e) => setTotalGoals(e.target.value)}
+                placeholder="Např. 180"
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>

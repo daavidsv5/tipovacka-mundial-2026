@@ -47,18 +47,13 @@ function GroupResultCard({
     rank: number;
   }) => {
     const selected = teams.find((t) => t.id === value);
-    const rankColors = ["text-yellow-500", "text-gray-400", "text-amber-600"];
-    const rankCircle = ["border-yellow-400 text-yellow-500", "border-gray-300 text-gray-400", "border-amber-400 text-amber-600"];
-    const rankText = ["1. místo", "2. místo", "3. místo"];
+    const rankCircle = ["border-green-800 text-green-800", "border-green-800 text-green-800", "border-green-800 text-green-800"];
 
     return (
       <div className="flex items-center gap-3 py-2">
         <div className={`w-6 h-6 rounded-full border-2 ${rankCircle[rank - 1]} flex items-center justify-center shrink-0`}>
           <span className="font-bold text-xs">{rank}</span>
         </div>
-        <span className={`text-sm font-semibold w-16 shrink-0 ${rankColors[rank - 1]}`}>
-          {rankText[rank - 1]}
-        </span>
         {selected ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <FlagIcon code={selected.flag} />

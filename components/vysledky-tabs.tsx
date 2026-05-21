@@ -133,9 +133,7 @@ function MatchesTab({ matches }: { matches: any[] }) {
 
 // ─── Skupiny ─────────────────────────────────────────────────────────────────
 
-const RANK_COLORS = ["text-yellow-500", "text-gray-400", "text-amber-600"];
-const RANK_CIRCLE = ["border-yellow-400 text-yellow-500", "border-gray-300 text-gray-400", "border-amber-400 text-amber-600"];
-const RANK_TEXT = ["1. místo", "2. místo", "3. místo"];
+const RANK_CIRCLE = ["border-green-800 text-green-800", "border-green-800 text-green-800", "border-green-800 text-green-800"];
 
 function GroupResultCard({ group, teams, result }: { group: string; teams: any[]; result: any | null }) {
   const places = [result?.firstPlaceTeamId, result?.secondPlaceTeamId, result?.thirdPlaceTeamId];
@@ -161,7 +159,6 @@ function GroupResultCard({ group, teams, result }: { group: string; teams: any[]
               <div className={`w-6 h-6 rounded-full border-2 ${RANK_CIRCLE[i]} flex items-center justify-center shrink-0`}>
                 <span className="font-bold text-xs">{i + 1}</span>
               </div>
-              <span className={`text-sm font-semibold w-16 shrink-0 ${RANK_COLORS[i]}`}>{RANK_TEXT[i]}</span>
               {team ? (
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <FlagIcon code={team.flag} />
@@ -242,7 +239,7 @@ function TournamentTab({ teams, tournamentResult }: { teams: any[]; tournamentRe
         </div>
       </div>
 
-      {/* Česko + Střelec */}
+      {/* Česko + Střelec + Góly */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
@@ -264,6 +261,19 @@ function TournamentTab({ teams, tournamentResult }: { teams: any[]; tournamentRe
           <div className="px-6 py-4">
             {r?.topScorer ? (
               <span className="text-gray-800 font-semibold text-sm">{r.topScorer}</span>
+            ) : (
+              <span className="text-gray-400 text-sm">Zatím nezapsáno</span>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white border border-blue-900 rounded-2xl shadow-sm overflow-hidden sm:col-span-2">
+          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <h3 className="font-bold text-gray-800">🎯 Počet gólů v turnaji</h3>
+          </div>
+          <div className="px-6 py-4">
+            {r?.totalGoals !== null && r?.totalGoals !== undefined ? (
+              <span className="text-gray-800 font-semibold text-sm">{r.totalGoals} gólů</span>
             ) : (
               <span className="text-gray-400 text-sm">Zatím nezapsáno</span>
             )}

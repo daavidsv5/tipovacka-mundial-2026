@@ -98,9 +98,9 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 ## Vizuální styl
 
 - **Orámování karet** – všude `border-blue-900` (plná tmavě modrá, bez opacity). Nepoužívat `border-blue-900/30` ani jiné varianty s opacitou.
-- **Rank indikátory ve skupinách** – místo emoji medailí (🥇🥈🥉) se používají barevné kroužky s číslem: žlutý (1), šedý (2), oranžový (3). Třídy: `border-yellow-400 text-yellow-500` / `border-gray-300 text-gray-400` / `border-amber-400 text-amber-600`.
+- **Rank indikátory ve skupinách** – kolečka s číslem v tmavě zelené (`border-green-800 text-green-800`) pro všechna tři místa. Texty „1. místo / 2. místo / 3. místo" jsou odstraněny.
 - **Admin karty zápasů** – stejná struktura jako hráčské karty: horní lišta (skupina/fáze + datum), střed (domácí tým vpravo | skóre inputy | hosté vlevo), spodní lišta (stav + akce). Inputy `w-12 h-10 border-2 border-gray-200 rounded-xl`.
-- **Logo v sidebaru** – jeden řádek „Tipovačka Mundial 2026", `font-bold text-base`, obrázek 48px s `filter: invert(1)`. Stejný styl jako na login stránce.
+- **Logo v sidebaru** – logo v bílém zaoblenném rámečku (`bg-white rounded-xl p-1.5`), vedle něj dva řádky textu: „Tipovačka" a „Mundial 2026", `font-bold text-lg text-white`. Bez `filter: invert(1)`.
 
 ## Mobilní responsivita
 
@@ -121,6 +121,32 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - Environment variables na Vercelu: `DATABASE_URL`, `AUTH_SECRET`, `NEXTAUTH_URL`
 - `NEXTAUTH_URL` = produkční URL projektu (např. `https://tipovacka-mundial-2026.vercel.app`)
 - Po změně env variables je nutný Redeploy
+
+## Změna hesla (hráč)
+
+- Stránka `/nastaveni` – hráč může změnit vlastní heslo (současné + nové + potvrzení).
+- Server action: `changePassword(currentPassword, newPassword)` v `lib/actions/user.ts`.
+- Minimální délka hesla: 6 znaků. Admin tuto funkci nemá potřebu (reset hesla dělá přes admin panel).
+- Odkaz „Změnit heslo" s ikonou `KeyRound` je v dolní části sidebaru nad „Odhlásit se". Funguje i na mobilu (sidebar sdílen s `MobileHeader`).
+
+## Skupinové tipy – limit 3. míst
+
+- Hráč může mít **maximálně 8 skupin** s tipem na 3. místo (MS 2026 postupuje 8 třetích míst).
+- Stav 3. míst je zdvižen do rodiče `GroupPredictions` – sleduje všechny skupiny najednou.
+- Počítadlo „3. místo: X/8" zobrazeno nad kartami (oranžové při dosažení limitu).
+- Při dosažení limitu se select pro 3. místo nahradí badge „Limit 8 dosažen".
+- Server-side validace v `saveGroupPrediction` (`lib/actions/predictions.ts`) – admin limit nemá.
+
+## Počet gólů v turnaji
+
+- Hráči tipují celkový počet gólů vstřelených na celém turnaji.
+- Bodování: **10 bodů** pokud je tip v toleranci **±10 gólů** od skutečnosti, jinak 0.
+- DB pole: `TournamentPrediction.totalGoals Int?` + `totalGoalsPointsAwarded Int @default(0)`.
+- DB pole: `TournamentResult.totalGoals Int?`.
+- Admin zadává skutečný počet gólů v záložce Turnaj v admin panelu.
+- Karta „🎯 Počet gólů v turnaji" zobrazena: v tipech hráče (pod Nejlepší střelec), ve Výsledcích → záložka Turnaj, v Pravidlech → sekce Skupiny & Turnaj.
+- `recalculateTournamentPoints` a `recalculateUserTotals` zahrnují `totalGoalsPointsAwarded`.
+- Při ukládání `saveTournamentPrediction`: prázdné stringy pro enum `czechPlacement` se konvertují na `null` (jinak Prisma hází `PrismaClientValidationError`).
 
 ## Kritické detaily
 

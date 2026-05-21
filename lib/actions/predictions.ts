@@ -49,6 +49,13 @@ export async function saveGroupPrediction(
     session.user.id === targetUserId || session.user.role === "ADMIN";
   if (!canEdit) throw new Error("Nemáš oprávnění");
 
+  if (thirdPlaceTeamId && session.user.role !== "ADMIN") {
+    const thirdsUsed = await prisma.groupPrediction.count({
+      where: { userId: targetUserId, thirdPlaceTeamId: { not: null }, group: { not: group } },
+    });
+    if (thirdsUsed >= 8) return { ok: false, error: "Maximálně 8 skupin může mít tip na 3. místo." };
+  }
+
   await prisma.groupPrediction.upsert({
     where: { userId_group: { userId: targetUserId, group } },
     create: {
@@ -71,6 +78,7 @@ export async function saveTournamentPrediction(data: {
   goldTeamId?: string;
   silverTeamId?: string;
   bronzeTeamId?: string;
+  totalGoals?: number | null;
   targetUserId: string;
 }) {
   const session = await auth();
@@ -81,11 +89,12 @@ export async function saveTournamentPrediction(data: {
   if (!canEdit) throw new Error("Nemáš oprávnění");
 
   const payload = {
-    czechPlacement: data.czechPlacement as never,
-    topScorer: data.topScorer,
-    goldTeamId: data.goldTeamId,
-    silverTeamId: data.silverTeamId,
-    bronzeTeamId: data.bronzeTeamId,
+    czechPlacement: (data.czechPlacement || null) as never,
+    topScorer: data.topScorer || null,
+    goldTeamId: data.goldTeamId || null,
+    silverTeamId: data.silverTeamId || null,
+    bronzeTeamId: data.bronzeTeamId || null,
+    totalGoals: data.totalGoals ?? null,
   };
 
   const existing = await prisma.tournamentPrediction.findUnique({

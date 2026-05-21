@@ -118,6 +118,7 @@ export async function saveTournamentResult(data: {
   goldTeamId: string | null;
   silverTeamId: string | null;
   bronzeTeamId: string | null;
+  totalGoals: number | null;
 }) {
   await requireAdmin();
 
@@ -154,12 +155,22 @@ async function recalculateTournamentPoints() {
     if (result.silverTeamId && pred.silverTeamId === result.silverTeamId) overallPts += 10;
     if (result.bronzeTeamId && pred.bronzeTeamId === result.bronzeTeamId) overallPts += 10;
 
+    const totalGoalsPts =
+      result.totalGoals !== null &&
+      result.totalGoals !== undefined &&
+      pred.totalGoals !== null &&
+      pred.totalGoals !== undefined &&
+      Math.abs(pred.totalGoals - result.totalGoals) <= 10
+        ? 10
+        : 0;
+
     await prisma.tournamentPrediction.update({
       where: { id: pred.id },
       data: {
         czechPointsAwarded: czechPts,
         topScorerPointsAwarded: topScorerPts,
         overallPointsAwarded: overallPts,
+        totalGoalsPointsAwarded: totalGoalsPts,
       },
     });
   }
@@ -186,7 +197,7 @@ export async function recalculateUserTotals() {
     });
     const tournPts = await prisma.tournamentPrediction.findUnique({
       where: { userId: user.id },
-      select: { czechPointsAwarded: true, topScorerPointsAwarded: true, overallPointsAwarded: true },
+      select: { czechPointsAwarded: true, topScorerPointsAwarded: true, overallPointsAwarded: true, totalGoalsPointsAwarded: true },
     });
 
     const total =
@@ -194,7 +205,8 @@ export async function recalculateUserTotals() {
       (groupPts._sum.pointsAwarded ?? 0) +
       (tournPts?.czechPointsAwarded ?? 0) +
       (tournPts?.topScorerPointsAwarded ?? 0) +
-      (tournPts?.overallPointsAwarded ?? 0);
+      (tournPts?.overallPointsAwarded ?? 0) +
+      (tournPts?.totalGoalsPointsAwarded ?? 0);
 
     await prisma.user.update({
       where: { id: user.id },

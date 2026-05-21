@@ -45,6 +45,7 @@ export default function PravidlaPage() {
             { pts: 10, desc: "Umístění českého týmu na turnaji — správný tip", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
             { pts: 10, desc: "Celkové pořadí — Zlato, Stříbro nebo Bronz (za každý správný)", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
             { pts: 10, desc: "Nejlepší střelec turnaje — správný tip", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
+            { pts: 10, desc: "Počet gólů v turnaji — tip v toleranci ±10 gólů od skutečného počtu", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
           ].map(({ pts, desc, color, bg }, i) => (
             <div key={i} className={`flex items-center gap-4 border rounded-xl px-5 py-3.5 ${bg}`}>
               <div className="w-10 h-10 rounded-xl bg-white shadow-sm border flex items-center justify-center shrink-0">
