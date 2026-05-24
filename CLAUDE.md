@@ -158,6 +158,12 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - **Zvýrazněný select při nevybrání** – `<select>` má dynamický border všude: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí ve všech 4 souborech: `group-predictions.tsx`, `group-results-admin.tsx`, `tournament-predictions.tsx`, `tournament-results-admin.tsx`.
 - **Badge bodů u skupinových řádků** – badge `+5b` (`text-emerald-600 font-semibold`) se zobrazí **pouze u správně tipnutých pozic** — porovnává se s `groupResult` z DB. Nesprávné tipy badge nezobrazují. `groupResults` se načítají v `hraci/[id]/page.tsx` a propasují přes `PlayerTabs` → `GroupPredictions` → `GroupCard`.
 
+## Admin panel — playoff zápasy
+
+- Selecty pro domácí a hosté jsou u playoff zápasů **vždy viditelné** (ne jen když tým není přiřazen). Přiřazený tým je předvybrán, admin ho může kdykoliv změnit.
+- `handleSave` volá `assignPlayoffTeam` pokud je hodnota vyplněna — bez porovnání s původní hodnotou.
+- Podmínka `!match.homeTeam` / `!match.awayTeam` byla odstraněna — selecty se řídí pouze `isPlayoff`.
+
 ## Kritické detaily
 
 - **TypeScript generiky v `.tsx`** – Turbopack parsuje `<T>` jako JSX. Používej `function` deklarace místo arrow funkcí s generiky.
