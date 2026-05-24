@@ -35,7 +35,9 @@ function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+          className={`w-full appearance-none bg-white border-2 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer ${
+            value ? "border-gray-200" : "border-blue-400"
+          }`}
         >
           <option value="">— nevybráno —</option>
           {options.map((o) => (
@@ -114,7 +116,9 @@ export function TournamentResultsAdmin({
                   <select
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                    className={`w-full appearance-none bg-white border-2 rounded-xl px-4 py-3 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer ${
+                      value ? "border-gray-200" : "border-blue-400"
+                    }`}
                   >
                     <option value="">— nevybráno —</option>
                     {podiumOptions(value).map((o) => (

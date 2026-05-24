@@ -85,7 +85,9 @@ export function TournamentPredictions({
             <select
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="w-full appearance-none bg-white border border-gray-300 rounded-xl pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+              className={`w-full appearance-none bg-white border-2 rounded-xl pl-3 pr-8 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer ${
+                value ? "border-gray-200" : "border-blue-400"
+              }`}
             >
               <option value="">— vybrat —</option>
               {podiumOptions(value).map((t: any) => (
@@ -117,7 +119,9 @@ export function TournamentPredictions({
               <select
                 value={czechPlacement}
                 onChange={(e) => setCzechPlacement(e.target.value)}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-3.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                className={`w-full appearance-none bg-white border-2 rounded-xl px-4 py-3.5 text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer ${
+                  czechPlacement ? "border-gray-200" : "border-blue-400"
+                }`}
               >
                 <option value="">— vybrat umístění —</option>
                 {CZECH_PLACEMENTS.map((p) => (
