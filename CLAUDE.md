@@ -148,10 +148,10 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - `recalculateTournamentPoints` a `recalculateUserTotals` zahrnují `totalGoalsPointsAwarded`.
 - Při ukládání `saveTournamentPrediction`: prázdné stringy pro enum `czechPlacement` se konvertují na `null` (jinak Prisma hází `PrismaClientValidationError`).
 
-## Skupinové karty — UX detaily
+## Skupinové a turnajové karty — UX detaily
 
-- **Zvýrazněný select při nevybrání** – `<select>` má dynamický border: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí v `group-predictions.tsx` (hráč) i `group-results-admin.tsx` (admin).
-- **Badge bodů u každého řádku** – vedle každého selectu je zelený badge `+5b` (`text-emerald-600 font-semibold`) — hráč vidí, kolik bodů za správné tipnutí daného umístění dostane.
+- **Zvýrazněný select při nevybrání** – `<select>` má dynamický border všude: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí ve všech 4 souborech: `group-predictions.tsx`, `group-results-admin.tsx`, `tournament-predictions.tsx`, `tournament-results-admin.tsx`.
+- **Badge bodů u skupinových řádků** – badge `+5b` (`text-emerald-600 font-semibold`) se zobrazí **pouze u správně tipnutých pozic** — porovnává se s `groupResult` z DB. Nesprávné tipy badge nezobrazují. `groupResults` se načítají v `hraci/[id]/page.tsx` a propasují přes `PlayerTabs` → `GroupPredictions` → `GroupCard`.
 
 ## Kritické detaily
 
