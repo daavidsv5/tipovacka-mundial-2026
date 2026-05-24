@@ -203,7 +203,6 @@ export default async function DashboardPage() {
                 {Math.round(prizePool * pct / 100).toLocaleString("cs-CZ")} Kč
               </div>
               <div className="text-sm font-bold text-gray-700">{pct} %</div>
-              <div className="text-gray-600 text-sm font-bold">{place}</div>
               {player && (
                 <div className="text-gray-800 text-xl font-bold mt-0.5">{player.name}</div>
               )}
