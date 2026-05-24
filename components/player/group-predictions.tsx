@@ -12,10 +12,11 @@ function FlagIcon({ code }: { code: string }) {
 
 function GroupCard({
   group, teams, prediction, playerId, canEdit,
-  thirdValue, onThirdChange, thirdLimitReached,
+  thirdValue, onThirdChange, thirdLimitReached, result,
 }: {
   group: string; teams: any[]; prediction: any; playerId: string; canEdit: boolean;
   thirdValue: string; onThirdChange: (v: string) => void; thirdLimitReached: boolean;
+  result: any;
 }) {
   const [first, setFirst] = useState(prediction?.firstPlaceTeamId ?? "");
   const [second, setSecond] = useState(prediction?.secondPlaceTeamId ?? "");
@@ -44,10 +45,14 @@ function GroupCard({
 
   const rankCircle = ["border-green-800 text-green-800", "border-green-800 text-green-800", "border-green-800 text-green-800"];
 
+  const correctFirst = result?.firstPlaceTeamId && first === result.firstPlaceTeamId;
+  const correctSecond = result?.secondPlaceTeamId && second === result.secondPlaceTeamId;
+  const correctThird = result?.thirdPlaceTeamId && thirdValue === result.thirdPlaceTeamId;
+
   const TeamRow = ({
-    value, onChange, rank, disabled,
+    value, onChange, rank, disabled, isCorrect,
   }: {
-    value: string; onChange: (v: string) => void; rank: number; disabled?: boolean;
+    value: string; onChange: (v: string) => void; rank: number; disabled?: boolean; isCorrect?: boolean;
   }) => {
     const selected = teams.find((t) => t.id === value);
     return (
@@ -63,7 +68,7 @@ function GroupCard({
         ) : (
           <span className="text-gray-400 text-sm flex-1">nevybráno</span>
         )}
-        <span className="text-xs text-emerald-600 font-semibold shrink-0">+5b</span>
+        {isCorrect && <span className="text-xs text-emerald-600 font-semibold shrink-0">+5b</span>}
         {canEdit && (
           disabled ? (
             <span className="text-xs text-orange-500 bg-orange-50 border border-orange-200 px-2 py-1 rounded-lg shrink-0">
@@ -120,13 +125,14 @@ function GroupCard({
       </div>
 
       <div className="px-5 py-2 space-y-1">
-        <TeamRow value={first} onChange={setFirst} rank={1} />
-        <TeamRow value={second} onChange={setSecond} rank={2} />
+        <TeamRow value={first} onChange={setFirst} rank={1} isCorrect={!!correctFirst} />
+        <TeamRow value={second} onChange={setSecond} rank={2} isCorrect={!!correctSecond} />
         <TeamRow
           value={thirdValue}
           onChange={onThirdChange}
           rank={3}
           disabled={thirdLimitReached && !thirdValue}
+          isCorrect={!!correctThird}
         />
       </div>
 
@@ -140,11 +146,12 @@ function GroupCard({
 }
 
 export function GroupPredictions({
-  playerId, teams, predictions, canEdit,
+  playerId, teams, predictions, groupResults, canEdit,
 }: {
-  playerId: string; teams: any[]; predictions: any[]; canEdit: boolean;
+  playerId: string; teams: any[]; predictions: any[]; groupResults: any[]; canEdit: boolean;
 }) {
   const predMap = new Map(predictions.map((p) => [p.group, p]));
+  const resultMap = new Map(groupResults.map((r) => [r.group, r]));
   const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
 
   const [thirds, setThirds] = useState<Record<string, string>>(() => {
@@ -184,6 +191,7 @@ export function GroupPredictions({
             thirdValue={thirds[g]}
             onThirdChange={(v) => setThirds((prev) => ({ ...prev, [g]: v }))}
             thirdLimitReached={thirdLimitReached}
+            result={resultMap.get(g) ?? null}
           />
         ))}
       </div>

@@ -5,7 +5,7 @@ import { PlayerTabs } from "@/components/player/player-tabs";
 
 async function getData(playerId: string) {
   try {
-    const [player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction] =
+    const [player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction, groupResults] =
       await Promise.all([
         prisma.user.findUnique({
           where: { id: playerId },
@@ -19,8 +19,9 @@ async function getData(playerId: string) {
         prisma.matchPrediction.findMany({ where: { userId: playerId } }),
         prisma.groupPrediction.findMany({ where: { userId: playerId } }),
         prisma.tournamentPrediction.findUnique({ where: { userId: playerId } }),
+        prisma.groupResult.findMany(),
       ]);
-    return { player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction };
+    return { player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction, groupResults };
   } catch {
     return null;
   }
@@ -81,6 +82,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ id: str
         teams={data.teams}
         matchPredictions={data.matchPredictions}
         groupPredictions={data.groupPredictions}
+        groupResults={data.groupResults}
         tournamentPrediction={data.tournamentPrediction}
         canEdit={canEdit}
         canEditGroups={canEditGroups}

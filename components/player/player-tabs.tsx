@@ -14,7 +14,7 @@ const TABS = [
 type Tab = (typeof TABS)[number]["id"];
 
 export function PlayerTabs({
-  player, matches, teams, matchPredictions, groupPredictions, tournamentPrediction,
+  player, matches, teams, matchPredictions, groupPredictions, groupResults, tournamentPrediction,
   canEdit, canEditGroups, canEditTournament,
 }: {
   player: { id: string; name: string };
@@ -22,6 +22,7 @@ export function PlayerTabs({
   teams: any[];
   matchPredictions: any[];
   groupPredictions: any[];
+  groupResults: any[];
   tournamentPrediction: any;
   canEdit: boolean;
   canEditGroups: boolean;
@@ -53,7 +54,7 @@ export function PlayerTabs({
           <MatchPredictions playerId={player.id} matches={matches} predictions={matchPredictions} canEdit={canEdit} />
         )}
         {active === "skupiny" && (
-          <GroupPredictions playerId={player.id} teams={teams} predictions={groupPredictions} canEdit={canEditGroups} />
+          <GroupPredictions playerId={player.id} teams={teams} predictions={groupPredictions} groupResults={groupResults} canEdit={canEditGroups} />
         )}
         {active === "turnaj" && (
           <TournamentPredictions playerId={player.id} teams={teams} prediction={tournamentPrediction} canEdit={canEditTournament} />
