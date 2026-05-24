@@ -95,6 +95,11 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - Všechny `.tsx` soubory musí být uloženy v **UTF-8** – české znaky a emoji se jinak zobrazují jako `Ĺ™`, `â€"` apod.
 - Problém se projevoval v `tournament-predictions.tsx` a `players-admin.tsx` – opraveno přepsáním souborů
 
+## Dashboard — Rozdělení výher
+
+- Sekce v `app/(main)/page.tsx` — mřížka 5 sloupců (ikona, částka, %, jméno hráče)
+- **Textový popis místa** („1. místo", „2. místo" atd.) je **odstraněn** — nezobrazovat ho.
+
 ## Vizuální styl
 
 - **Orámování karet** – všude `border-blue-900` (plná tmavě modrá, bez opacity). Nepoužívat `border-blue-900/30` ani jiné varianty s opacitou.
