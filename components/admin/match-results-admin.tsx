@@ -128,8 +128,8 @@ function MatchRow({
   const handleSave = () => {
     startTransition(async () => {
       if (isPlayoff) {
-        if (homeTeamId && homeTeamId !== match.homeTeamId) await assignPlayoffTeam(match.id, "home", homeTeamId);
-        if (awayTeamId && awayTeamId !== match.awayTeamId) await assignPlayoffTeam(match.id, "away", awayTeamId);
+        if (homeTeamId) await assignPlayoffTeam(match.id, "home", homeTeamId);
+        if (awayTeamId) await assignPlayoffTeam(match.id, "away", awayTeamId);
       }
       const h = parseInt(home);
       const a = parseInt(away);
@@ -177,7 +177,7 @@ function MatchRow({
       <div className="flex items-center px-3 sm:px-5 pb-3 gap-2 sm:gap-3">
         {/* Domácí */}
         <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 justify-end min-w-0">
-          {isPlayoff && !match.homeTeam ? (
+          {isPlayoff ? (
             <TeamSelect value={homeTeamId} onChange={setHomeTeamId} placeholder="— domácí —" />
           ) : (
             <>
@@ -212,7 +212,7 @@ function MatchRow({
 
         {/* Hosté */}
         <div className="flex-1 flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-          {isPlayoff && !match.awayTeam ? (
+          {isPlayoff ? (
             <TeamSelect value={awayTeamId} onChange={setAwayTeamId} placeholder="— hosté —" />
           ) : (
             <>
