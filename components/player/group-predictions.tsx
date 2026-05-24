@@ -63,6 +63,7 @@ function GroupCard({
         ) : (
           <span className="text-gray-400 text-sm flex-1">nevybráno</span>
         )}
+        <span className="text-xs text-emerald-600 font-semibold shrink-0">+5b</span>
         {canEdit && (
           disabled ? (
             <span className="text-xs text-orange-500 bg-orange-50 border border-orange-200 px-2 py-1 rounded-lg shrink-0">
@@ -73,7 +74,9 @@ function GroupCard({
               <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+                className={`w-full appearance-none bg-white border-2 rounded-lg pl-3 pr-8 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer ${
+                  value ? "border-gray-200" : "border-blue-400"
+                }`}
               >
                 <option value="">— vybrat —</option>
                 {optionsFor(value).map((t: any) => (

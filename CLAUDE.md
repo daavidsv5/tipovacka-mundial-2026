@@ -148,6 +148,11 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - `recalculateTournamentPoints` a `recalculateUserTotals` zahrnují `totalGoalsPointsAwarded`.
 - Při ukládání `saveTournamentPrediction`: prázdné stringy pro enum `czechPlacement` se konvertují na `null` (jinak Prisma hází `PrismaClientValidationError`).
 
+## Skupinové karty — UX detaily
+
+- **Zvýrazněný select při nevybrání** – `<select>` má dynamický border: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí v `group-predictions.tsx` (hráč) i `group-results-admin.tsx` (admin).
+- **Badge bodů u každého řádku** – vedle každého selectu je zelený badge `+5b` (`text-emerald-600 font-semibold`) — hráč vidí, kolik bodů za správné tipnutí daného umístění dostane.
+
 ## Kritické detaily
 
 - **TypeScript generiky v `.tsx`** – Turbopack parsuje `<T>` jako JSX. Používej `function` deklarace místo arrow funkcí s generiky.
