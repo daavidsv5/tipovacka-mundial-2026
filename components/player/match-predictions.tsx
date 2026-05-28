@@ -121,14 +121,14 @@ function ScoreInputCard({
             type="number" min={0} max={20} value={home}
             onChange={(e) => setHome(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+            className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${home === "" ? "border-blue-400" : "border-gray-200"}`}
           />
           <span className="text-gray-300 font-light text-lg">:</span>
           <input
             type="number" min={0} max={20} value={away}
             onChange={(e) => setAway(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className="w-12 h-10 bg-white border-2 border-gray-200 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors"
+            className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${away === "" ? "border-blue-400" : "border-gray-200"}`}
           />
           <button
             onClick={handleSave}

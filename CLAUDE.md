@@ -156,6 +156,7 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 ## Skupinové a turnajové karty — UX detaily
 
 - **Zvýrazněný select při nevybrání** – `<select>` má dynamický border všude: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí ve všech 4 souborech: `group-predictions.tsx`, `group-results-admin.tsx`, `tournament-predictions.tsx`, `tournament-results-admin.tsx`.
+- **Zvýrazněné inputy pro tip skóre** – `<input>` v `ScoreInputCard` (`match-predictions.tsx`) má dynamický border: prázdná hodnota → `border-blue-400`, vyplněná → `border-gray-200`. Stejný vzor jako u selectů.
 - **Badge bodů u skupinových řádků** – badge `+5b` (`text-emerald-600 font-semibold`) se zobrazí **pouze u správně tipnutých pozic** — porovnává se s `groupResult` z DB. Nesprávné tipy badge nezobrazují. `groupResults` se načítají v `hraci/[id]/page.tsx` a propasují přes `PlayerTabs` → `GroupPredictions` → `GroupCard`.
 
 ## Admin panel — playoff zápasy

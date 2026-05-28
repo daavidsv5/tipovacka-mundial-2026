@@ -45,7 +45,7 @@ export default function PravidlaPage() {
             { pts: 10, desc: "Umístění českého týmu na turnaji — správný tip", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
             { pts: 10, desc: "Celkové pořadí — Zlato, Stříbro nebo Bronz (za každý správný)", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
             { pts: 10, desc: "Nejlepší střelec turnaje — správný tip", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
-            { pts: 10, desc: "Počet gólů v turnaji — tip v toleranci ±10 gólů od skutečného počtu", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
+            { pts: 10, desc: "Počet gólů v turnaji — tip v toleranci ±10 gólů od skutečného počtu (počítají se góly po 90 minutách a prodloužení)", color: "text-yellow-600", bg: "bg-yellow-50 border-yellow-200" },
           ].map(({ pts, desc, color, bg }, i) => (
             <div key={i} className={`flex items-center gap-4 border rounded-xl px-5 py-3.5 ${bg}`}>
               <div className="w-10 h-10 rounded-xl bg-white shadow-sm border flex items-center justify-center shrink-0">
@@ -63,7 +63,7 @@ export default function PravidlaPage() {
         </h2>
         <ul className="text-gray-600 space-y-2.5 text-sm leading-relaxed">
           <li>• Při rovnosti bodů v celkovém žebříčku rozhoduje <strong className="text-gray-900">větší počet přesných výsledků</strong>.</li>
-          <li>• U nejlepšího střelce při shodě gólů rozhoduje: <strong className="text-gray-900">1. počet asistencí</strong>, 2. odehraný čas (méně je více).</li>
+          <li>• U nejlepšího střelce při shodě gólů rozhoduje: <strong className="text-gray-900">1. počet asistencí</strong>, <strong className="text-gray-900">2. odehraný čas (méně je více)</strong>.</li>
         </ul>
       </section>
 
