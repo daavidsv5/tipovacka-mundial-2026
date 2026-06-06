@@ -64,9 +64,6 @@ export function TournamentPredictions({
     return (
       <div className="flex items-center gap-3 py-3">
         <span className="text-2xl shrink-0">{icon}</span>
-        <span className={`text-sm font-semibold w-16 shrink-0 ${
-          icon === "🥇" ? "text-yellow-500" : icon === "🥈" ? "text-gray-500" : "text-amber-600"
-        }`}>{label}</span>
         {selected ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <FlagIcon code={selected.flag} />
