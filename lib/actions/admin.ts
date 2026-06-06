@@ -27,7 +27,7 @@ export async function saveMatchResult(matchId: string, homeScore: number, awaySc
   return { ok: true };
 }
 
-export async function assignPlayoffTeam(matchId: string, side: "home" | "away", teamId: string) {
+export async function assignPlayoffTeam(matchId: string, side: "home" | "away", teamId: string | null) {
   await requireAdmin();
 
   await prisma.match.update({

@@ -128,8 +128,8 @@ function MatchRow({
   const handleSave = () => {
     startTransition(async () => {
       if (isPlayoff) {
-        if (homeTeamId) await assignPlayoffTeam(match.id, "home", homeTeamId);
-        if (awayTeamId) await assignPlayoffTeam(match.id, "away", awayTeamId);
+        await assignPlayoffTeam(match.id, "home", homeTeamId || null);
+        await assignPlayoffTeam(match.id, "away", awayTeamId || null);
       }
       const h = parseInt(home);
       const a = parseInt(away);
