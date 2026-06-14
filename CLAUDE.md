@@ -153,6 +153,13 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - `recalculateTournamentPoints` a `recalculateUserTotals` zahrnují `totalGoalsPointsAwarded`.
 - Při ukládání `saveTournamentPrediction`: prázdné stringy pro enum `czechPlacement` se konvertují na `null` (jinak Prisma hází `PrismaClientValidationError`).
 
+## ScoreInputCard — feedback po uložení tipu
+
+- **Tlačítko zzezelená** po úspěšném uložení: `saved` state → `bg-emerald-500` po dobu 2 s, pak zpět na `bg-blue-600`.
+- **Chybová hláška** (`text-red-500`) se zobrazí pod řádkem s inputy na 4 s, pokud server action hodí chybu (zamčený zápas, síťová chyba apod.).
+- `handleSave` má `try/catch` uvnitř `startTransition` — chyby se nesmí tiše polykat.
+- Struktura spodního pásu s inputy je obalena `<>...</>` fragmentem (div + podmíněný `<p>` pro chybu jsou sourozenci).
+
 ## Skupinové a turnajové karty — UX detaily
 
 - **Zvýrazněný select při nevybrání** – `<select>` má dynamický border všude: prázdná hodnota → `border-2 border-blue-400`, vybraná hodnota → `border-2 border-gray-200`. Platí ve všech 4 souborech: `group-predictions.tsx`, `group-results-admin.tsx`, `tournament-predictions.tsx`, `tournament-results-admin.tsx`.

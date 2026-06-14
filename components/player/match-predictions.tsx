@@ -42,16 +42,23 @@ function ScoreInputCard({
   const [home, setHome] = useState(initHome?.toString() ?? "");
   const [away, setAway] = useState(initAway?.toString() ?? "");
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleSave = () => {
     const h = parseInt(home);
     const a = parseInt(away);
     if (isNaN(h) || isNaN(a) || h < 0 || a < 0) return;
+    setError(null);
     startTransition(async () => {
-      await saveMatchPrediction(matchId, h, a, playerId);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      try {
+        await saveMatchPrediction(matchId, h, a, playerId);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Nepodařilo se uložit tip");
+        setTimeout(() => setError(null), 4000);
+      }
     });
   };
 
@@ -116,28 +123,33 @@ function ScoreInputCard({
 
       {/* Spodní pás: inputy (jen když lze editovat) */}
       {!isFinished && !isLocked && canEdit && (
-        <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 bg-gray-50 border-t border-gray-100">
-          <input
-            type="number" min={0} max={20} value={home}
-            onChange={(e) => setHome(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${home === "" ? "border-blue-400" : "border-gray-200"}`}
-          />
-          <span className="text-gray-300 font-light text-lg">:</span>
-          <input
-            type="number" min={0} max={20} value={away}
-            onChange={(e) => setAway(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${away === "" ? "border-blue-400" : "border-gray-200"}`}
-          />
-          <button
-            onClick={handleSave}
-            disabled={isPending}
-            className="w-9 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center transition-colors shadow-sm"
-          >
-            <Check size={15} className="text-white" />
-          </button>
-        </div>
+        <>
+          <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2.5 bg-gray-50 border-t border-gray-100">
+            <input
+              type="number" min={0} max={20} value={home}
+              onChange={(e) => setHome(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSave()}
+              className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${home === "" ? "border-blue-400" : "border-gray-200"}`}
+            />
+            <span className="text-gray-300 font-light text-lg">:</span>
+            <input
+              type="number" min={0} max={20} value={away}
+              onChange={(e) => setAway(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSave()}
+              className={`w-12 h-10 bg-white border-2 rounded-xl text-center text-gray-900 font-bold text-sm focus:outline-none focus:border-blue-500 tabular-nums transition-colors ${away === "" ? "border-blue-400" : "border-gray-200"}`}
+            />
+            <button
+              onClick={handleSave}
+              disabled={isPending}
+              className={`w-9 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm disabled:opacity-50 ${saved ? "bg-emerald-500 hover:bg-emerald-600" : "bg-blue-600 hover:bg-blue-700"}`}
+            >
+              <Check size={15} className="text-white" />
+            </button>
+          </div>
+          {error && (
+            <p className="text-xs text-red-500 text-center pb-2 px-2">{error}</p>
+          )}
+        </>
       )}
 
       {/* Spodní pás: stav + body */}
