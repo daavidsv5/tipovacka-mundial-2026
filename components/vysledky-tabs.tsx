@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Users } from "lucide-react";
 
 const TABS = [
   { id: "zapasy", label: "Zápasy", emoji: "⚽" },
@@ -40,10 +40,24 @@ function FlagIcon({ code }: { code: string }) {
 
 // ─── Zápasy ──────────────────────────────────────────────────────────────────
 
-function MatchCard({ match }: { match: any }) {
+function PredictionPointsBadge({ pts }: { pts: number }) {
+  if (pts === 5) return <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">+5 b.</span>;
+  if (pts === 3) return <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">+3 b.</span>;
+  if (pts === 2) return <span className="text-xs font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-full px-2 py-0.5">+2 b.</span>;
+  return <span className="text-xs font-medium text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">+0 b.</span>;
+}
+
+function MatchCard({ match, predictions }: { match: any; predictions: any[] }) {
+  const [open, setOpen] = useState(false);
   const date = new Date(match.date);
+  const now = new Date();
+  const isLocked = now >= date;
   const dateStr = date.toLocaleDateString("cs-CZ", { day: "numeric", month: "numeric", year: "numeric", timeZone: "Europe/Prague" });
   const timeStr = date.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
+
+  const sortedPredictions = [...predictions].sort((a, b) =>
+    a.user.name.localeCompare(b.user.name, "cs")
+  );
 
   return (
     <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${match.isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
@@ -80,14 +94,52 @@ function MatchCard({ match }: { match: any }) {
           <span className="text-gray-900 font-semibold text-xs sm:text-sm truncate leading-tight">{match.awayTeam?.name ?? "TBD"}</span>
         </div>
       </div>
-      {match.isFinished && (
-        <div className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 bg-gray-50 border-t border-gray-100">
-          <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1"><Check size={11} /> Hotovo</span>
-          {match.location && (
+
+      {/* Spodní lišta: stav + tlačítko pro tipy */}
+      <div className="flex items-center justify-between px-3 sm:px-5 py-2 bg-gray-50 border-t border-gray-100">
+        <div className="flex items-center gap-2">
+          {match.isFinished && (
+            <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1"><Check size={11} /> Hotovo</span>
+          )}
+          {match.isFinished && match.location && (
             <>
               <span className="text-gray-300">·</span>
-              <span className="text-xs text-gray-400 truncate max-w-[120px] sm:max-w-[180px]">{match.location}</span>
+              <span className="text-xs text-gray-400 truncate max-w-[100px] sm:max-w-[160px]">{match.location}</span>
             </>
+          )}
+          {!match.isFinished && match.location && (
+            <span className="text-xs text-gray-400 truncate max-w-[120px] sm:max-w-[180px]">{match.location}</span>
+          )}
+        </div>
+        {isLocked && (
+          <button
+            onClick={() => setOpen((o) => !o)}
+            className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors shrink-0"
+          >
+            <Users size={12} />
+            Jak tipovali
+            {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+          </button>
+        )}
+      </div>
+
+      {/* Rozbalovací tipy hráčů */}
+      {isLocked && open && (
+        <div className="border-t border-gray-100 px-3 sm:px-5 py-3 space-y-1.5">
+          {sortedPredictions.length === 0 ? (
+            <p className="text-xs text-gray-400 text-center py-1">Nikdo netipoval</p>
+          ) : (
+            sortedPredictions.map((pred) => (
+              <div key={pred.user.id} className="flex items-center justify-between gap-2">
+                <span className="text-sm text-gray-700 font-medium truncate">{pred.user.name}</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-sm font-bold text-gray-900 tabular-nums">
+                    {pred.homeScore} : {pred.awayScore}
+                  </span>
+                  {match.isFinished && <PredictionPointsBadge pts={pred.pointsAwarded} />}
+                </div>
+              </div>
+            ))
           )}
         </div>
       )}
@@ -95,11 +147,16 @@ function MatchCard({ match }: { match: any }) {
   );
 }
 
-function MatchesTab({ matches }: { matches: any[] }) {
+function MatchesTab({ matches, matchPredictions }: { matches: any[]; matchPredictions: any[] }) {
   const stageOrder = ["GROUP", "R32", "R16", "QF", "SF", "BRONZE", "FINAL"];
   const grouped = matches.reduce<Record<string, any[]>>((acc, m) => {
     if (!acc[m.stage]) acc[m.stage] = [];
     acc[m.stage].push(m);
+    return acc;
+  }, {});
+  const predByMatch = matchPredictions.reduce<Record<string, any[]>>((acc, p) => {
+    if (!acc[p.matchId]) acc[p.matchId] = [];
+    acc[p.matchId].push(p);
     return acc;
   }, {});
   const totalFinished = matches.filter((m) => m.isFinished).length;
@@ -122,7 +179,9 @@ function MatchesTab({ matches }: { matches: any[] }) {
               <span className="text-sm text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">{finished}/{stageMatches.length}</span>
             </div>
             <div className="space-y-2">
-              {sortedMatches.map((m) => <MatchCard key={m.id} match={m} />)}
+              {sortedMatches.map((m) => (
+                <MatchCard key={m.id} match={m} predictions={predByMatch[m.id] ?? []} />
+              ))}
             </div>
           </div>
         );
@@ -287,12 +346,13 @@ function TournamentTab({ teams, tournamentResult }: { teams: any[]; tournamentRe
 // ─── Hlavní komponenta ────────────────────────────────────────────────────────
 
 export function VysledkyTabs({
-  matches, teams, groupResults, tournamentResult,
+  matches, teams, groupResults, tournamentResult, matchPredictions,
 }: {
   matches: any[];
   teams: any[];
   groupResults: any[];
   tournamentResult: any | null;
+  matchPredictions: any[];
 }) {
   const [active, setActive] = useState<Tab>("zapasy");
 
@@ -315,7 +375,7 @@ export function VysledkyTabs({
         ))}
       </div>
 
-      {active === "zapasy" && <MatchesTab matches={matches} />}
+      {active === "zapasy" && <MatchesTab matches={matches} matchPredictions={matchPredictions} />}
       {active === "skupiny" && <GroupsTab teams={teams} groupResults={groupResults} />}
       {active === "turnaj" && <TournamentTab teams={teams} tournamentResult={tournamentResult} />}
     </div>

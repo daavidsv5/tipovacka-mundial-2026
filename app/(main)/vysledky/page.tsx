@@ -6,18 +6,21 @@ async function getData() {
     try { return await fn(); } catch { return fallback; }
   }
 
-  const [matches, teams, groupResults, tournamentResult] = await Promise.all([
+  const [matches, teams, groupResults, tournamentResult, matchPredictions] = await Promise.all([
     safe(() => prisma.match.findMany({ include: { homeTeam: true, awayTeam: true }, orderBy: { matchNumber: "asc" } }), []),
     safe(() => prisma.team.findMany({ orderBy: [{ group: "asc" }, { name: "asc" }] }), []),
     safe(() => prisma.groupResult.findMany(), []),
     safe(() => prisma.tournamentResult.findUnique({ where: { id: "singleton" } }), null),
+    safe(() => prisma.matchPrediction.findMany({
+      include: { user: { select: { id: true, name: true } } },
+    }), []),
   ]);
 
-  return { matches, teams, groupResults, tournamentResult };
+  return { matches, teams, groupResults, tournamentResult, matchPredictions };
 }
 
 export default async function VysledkyPage() {
-  const { matches, teams, groupResults, tournamentResult } = await getData();
+  const { matches, teams, groupResults, tournamentResult, matchPredictions } = await getData();
 
   return (
     <div className="space-y-6">
@@ -31,6 +34,7 @@ export default async function VysledkyPage() {
         teams={teams}
         groupResults={groupResults}
         tournamentResult={tournamentResult}
+        matchPredictions={matchPredictions}
       />
     </div>
   );

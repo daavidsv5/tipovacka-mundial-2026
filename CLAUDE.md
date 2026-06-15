@@ -153,6 +153,15 @@ Skupiny a turnaj: 5 bodů za správné umístění (skupiny), 10 bodů za správ
 - `recalculateTournamentPoints` a `recalculateUserTotals` zahrnují `totalGoalsPointsAwarded`.
 - Při ukládání `saveTournamentPrediction`: prázdné stringy pro enum `czechPlacement` se konvertují na `null` (jinak Prisma hází `PrismaClientValidationError`).
 
+## Výsledky — tipy hráčů u zápasů
+
+- Záložka Zápasy má na každé kartě rozbalovací sekci „Jak tipovali" (tlačítko se zobrazí jen když `now >= match.date` — zápas zamčen).
+- Data se načítají v `vysledky/page.tsx`: `prisma.matchPrediction.findMany({ include: { user: { select: { id, name } } } })`.
+- `matchPredictions` se předávají: `VysledkyTabs` → `MatchesTab` → `MatchCard` (filtrování per-zápas v `predByMatch` mapě).
+- Tipy jsou seřazeny podle jména hráče (`localeCompare("cs")`).
+- Body (`pointsAwarded`) se zobrazí pouze pokud `match.isFinished` — před skončením zápasu jsou skryté.
+- Když nikdo netipoval: „Nikdo netipoval".
+
 ## ScoreInputCard — feedback po uložení tipu
 
 - **Tlačítko zzezelená** po úspěšném uložení: `saved` state → `bg-emerald-500` po dobu 2 s, pak zpět na `bg-blue-600`.
