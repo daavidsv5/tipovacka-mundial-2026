@@ -159,10 +159,27 @@ function MatchesTab({ matches, matchPredictions }: { matches: any[]; matchPredic
     acc[p.matchId].push(p);
     return acc;
   }, {});
-  const totalFinished = matches.filter((m) => m.isFinished).length;
+  const finishedMatches = matches.filter((m) => m.isFinished);
+  const totalFinished = finishedMatches.length;
+  const totalGoals = finishedMatches.reduce((sum, m) => sum + (m.homeScore ?? 0) + (m.awayScore ?? 0), 0);
+  const avgGoals = totalFinished > 0 ? (totalGoals / totalFinished).toFixed(2) : null;
 
   return (
     <div className="space-y-8">
+      {totalFinished > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-white border border-blue-900 rounded-2xl shadow-sm px-5 py-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Počet gólů</p>
+            <p className="text-3xl font-black text-gray-900 tabular-nums">{totalGoals}</p>
+            <p className="text-xs text-gray-400 mt-1">z {totalFinished} zápasů</p>
+          </div>
+          <div className="bg-white border border-blue-900 rounded-2xl shadow-sm px-5 py-4">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Průměr / zápas</p>
+            <p className="text-3xl font-black text-gray-900 tabular-nums">{avgGoals}</p>
+            <p className="text-xs text-gray-400 mt-1">gólů na zápas</p>
+          </div>
+        </div>
+      )}
       <p className="text-gray-500 text-sm">{totalFinished} z {matches.length} zápasů odehráno</p>
       {stageOrder.map((stage) => {
         const stageMatches = grouped[stage];
