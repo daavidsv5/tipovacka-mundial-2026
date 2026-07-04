@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { useScrollToTodayMatch } from "@/lib/scroll-to-today";
 import { Check, ChevronDown, ChevronUp, Users } from "lucide-react";
 
 const TABS = [
@@ -60,7 +61,7 @@ function MatchCard({ match, predictions }: { match: any; predictions: any[] }) {
   );
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${match.isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
+    <div id={`match-${match.id}`} className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${match.isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
       <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {match.groupName ? (
           <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Sk. {match.groupName}</span>
@@ -163,6 +164,8 @@ function MatchesTab({ matches, matchPredictions }: { matches: any[]; matchPredic
   const totalFinished = finishedMatches.length;
   const totalGoals = finishedMatches.reduce((sum, m) => sum + (m.homeScore ?? 0) + (m.awayScore ?? 0), 0);
   const avgGoals = totalFinished > 0 ? (totalGoals / totalFinished).toFixed(2) : null;
+
+  useScrollToTodayMatch(matches);
 
   return (
     <div className="space-y-8">

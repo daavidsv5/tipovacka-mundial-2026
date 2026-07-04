@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveMatchResult, assignPlayoffTeam, adminSaveMatchPrediction } from "@/lib/actions/admin";
+import { useScrollToTodayMatch } from "@/lib/scroll-to-today";
 import { Check, ChevronDown, ChevronUp, Users } from "lucide-react";
 
 const STAGE_LABELS: Record<string, string> = {
@@ -160,7 +161,7 @@ function MatchRow({
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-blue-900 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+    <div id={`match-${match.id}`} className="bg-white rounded-2xl border border-blue-900 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       {/* Top row: skupina/fáze + číslo zápasu + datum */}
       <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {match.groupName ? (
@@ -307,6 +308,8 @@ export function MatchResultsAdmin({
   }
 
   const totalFinished = matches.filter((m) => m.isFinished).length;
+
+  useScrollToTodayMatch(matches);
 
   return (
     <div className="space-y-8">

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveMatchPrediction } from "@/lib/actions/predictions";
+import { useScrollToTodayMatch } from "@/lib/scroll-to-today";
 import { Check, Lock } from "lucide-react";
 
 const STAGE_LABELS: Record<string, string> = {
@@ -69,7 +70,7 @@ function ScoreInputCard({
   const timeStr = date.toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Prague" });
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
+    <div id={`match-${matchId}`} className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${isFinished ? "border-blue-900" : "border-blue-900 hover:border-blue-700/50 hover:shadow-md"}`}>
       {/* Top row: group + date */}
       <div className="flex items-center justify-between px-3 sm:px-5 pt-3 pb-1.5">
         {groupName ? (
@@ -188,6 +189,8 @@ export function MatchPredictions({
 }) {
   const predMap = new Map(predictions.map((p) => [p.matchId, p]));
   const now = new Date();
+
+  useScrollToTodayMatch(matches);
 
   const grouped = matches.reduce<Record<string, any[]>>((acc, m) => {
     if (!acc[m.stage]) acc[m.stage] = [];
